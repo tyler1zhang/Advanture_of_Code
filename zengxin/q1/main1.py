@@ -9,4 +9,11 @@ def main():
             floor -= 1
     print(floor)
 
-if __name__ == '__main__': main()
+# if __name__ == '__main__': main()
+main()
+'''
+if I run main() directly, once it is imported by import.py, 
+it will run automatically.
+if I use the __name__ == '__main__' here, onc it is imported by import.py
+it will not run, until it is called
+'''
