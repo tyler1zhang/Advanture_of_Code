@@ -7,6 +7,7 @@ practice code with ZX
 * [Answer for question 2](Tyler/2015-Answer2_tyler.ipynb)
 * [Answer for question 3](Tyler/2015-Answer3_tyler.ipynb)
 * [Answer for question 4](Tyler/2015-Answer4_tyler.ipynb)
+* [Answer for question 5](Tyler/2015-Answer5_tyler.ipynb)
 
 
 
