@@ -6,6 +6,7 @@ practice code with ZX
 * [Answer for question 1](Tyler/2015-Answer1_tyler.ipynb)   
 * [Answer for question 2](Tyler/2015-Answer2_tyler.ipynb)
 * [Answer for question 3](Tyler/2015-Answer3_tyler.ipynb)
+* [Answer for question 4](Tyler/2015-Answer4_tyler.ipynb)
 
 
 
