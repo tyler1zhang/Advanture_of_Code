@@ -1,5 +1,5 @@
 # Advanture_of_Code
-practice code with ZX
+practice code
 
 ## Tyler's answers of 2015
 
