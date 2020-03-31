@@ -19,5 +19,5 @@ practice code
 * Answer for question 3 [Part 1](zengxin/q3/main1.py) & [Part 2](zengxin/q3/main2.py)
 * Answer for question 4 [Part 1](zengxin/q4/main1.py) & [Part 2](zengxin/q4/main2.py)
 * Answer for question 5 [Part 1](zengxin/q5/main1.py) & [Part 2](zengxin/q5/main2.py)
-
+* Answer for question 6 [Part 1](zengxin/q6/main1.py) & [Part 2](zengxin/q6/main2.py)
 
