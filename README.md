@@ -9,7 +9,7 @@ practice code
 * [Answer for question 4](Tyler/2015-Answer4_tyler.ipynb)
 * [Answer for question 5](Tyler/2015-Answer5_tyler.ipynb)
 * [Answer for question 6](Tyler/2015-Answer6_tyler.ipynb)
-* Answer for question 7: [jupyter notebook](Tyler/2015-Answer6_tyler.ipynb), [py](Tyler/2015-q7.py)
+* Answer for question 7: [jupyter notebook](Tyler/2015-Answer7_tyler.ipynb), [py](Tyler/2015-q7.py)
 
 
 
