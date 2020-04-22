@@ -1,4 +1,5 @@
 def not_exist_newdic(name_str, dic2):
+    #check if the "x" did not have value and stored in dic2
     try:
         dic2[name_str]
         return False
@@ -6,7 +7,8 @@ def not_exist_newdic(name_str, dic2):
         return True
 
 def two_value_check(one_str, dic1, dic2, i):
-    #one_v is one of the value inside of d1['value']
+    #for "and", "or", "lshift" and 'Rshift" there are two element in 'value'. check one of them if integer. if yes, return this value. 
+    #if not, check if already exist in dic2. 
     try:
         int_v = int(one_str)
         bool_v = True
@@ -23,10 +25,11 @@ def two_value_check(one_str, dic1, dic2, i):
     return int_v, bool_v
 
 def get_value(name_str, dic1, dic2, i):
-    
+    # get the value and store in dic2. 
+    # 'i' is control recursion time. 
     d1 = dic1[name_str]
     
-    if i <3:
+    if i <5:
         
         if d1['connect_method'] == 'eql':
             try:

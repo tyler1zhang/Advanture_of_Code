@@ -9,6 +9,7 @@ practice code
 * [Answer for question 4](Tyler/2015-Answer4_tyler.ipynb)
 * [Answer for question 5](Tyler/2015-Answer5_tyler.ipynb)
 * [Answer for question 6](Tyler/2015-Answer6_tyler.ipynb)
+* Answer for question 7: [jupyter notebook](Tyler/2015-Answer6_tyler.ipynb), [py](Tyler/2015-q7.py)
 
 
 
@@ -20,4 +21,4 @@ practice code
 * Answer for question 4 [Part 1](zengxin/q4/main1.py) & [Part 2](zengxin/q4/main2.py)
 * Answer for question 5 [Part 1](zengxin/q5/main1.py) & [Part 2](zengxin/q5/main2.py)
 * Answer for question 6 [Part 1](zengxin/q6/main1.py) & [Part 2](zengxin/q6/main2.py)
-
+* Answer for question 7 [Part 1](zengxin/q7/main1.py) & [Part 2](zengxin/q7/main2.py)
