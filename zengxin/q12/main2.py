@@ -1,24 +1,30 @@
 import re
 import json
 
-def getRedList(startDict):
+def getRedList(func):
     myRedList = []
-    def sortLastDictWithRed(startDict):
-        if "red" in startDict.values():
-            myRedList.append(startDict)
-        else:
-            for value in startDict.values():
-                if isinstance(value,dict):
-                    sortLastDictWithRed(value)
-                elif isinstance(value,list): # explore down a layer if a list
-                    for el in value:
-                        if isinstance(el, dict):
-                            sortLastDictWithRed(el)
-                        elif isinstance(el, list):
-                            mydict = {"mydict":el}
-                            sortLastDictWithRed(mydict) # make sure recursion keeps going when list exist, explore down a layer if a list
-    sortLastDictWithRed(startDict)
-    return myRedList
+    def wrapper(*arg):
+        for i in func(*arg):
+            myRedList.append(i)
+        return myRedList
+    return wrapper
+
+@getRedList
+def sortLastDictWithRed(startDict):
+    if "red" in startDict.values():
+        # myRedList.append(startDict)
+        yield startDict
+    else:
+        for value in startDict.values():
+            if isinstance(value,dict):
+                sortLastDictWithRed(value)
+            elif isinstance(value,list): # explore down a layer if a list
+                for el in value:
+                    if isinstance(el, dict):
+                        sortLastDictWithRed(el)
+                    elif isinstance(el, list):
+                        mydict = {"mydict":el}
+                        sortLastDictWithRed(mydict) # make sure recursion keeps going when list exist, explore down a layer if a list 
 
 def main():
     with open('input.json') as f:
@@ -31,7 +37,9 @@ def main():
     # get the list with red in dict as required
     myjsonDict = json.loads(mystr)
     print(myjsonDict)
-    myRedList = getRedList(myjsonDict)
+    # myRedList = getRedList(myjsonDict)
+    myRedList = sortLastDictWithRed(myjsonDict)
+
     print("this is my red list ", myRedList)
 
     # find the number of within the red dicts
