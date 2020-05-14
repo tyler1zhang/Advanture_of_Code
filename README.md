@@ -18,9 +18,6 @@ practice code
 * [Answer for question 12](Tyler/2015-Answer12_tyler.ipynb)
 
 
-
-
-
 ## Sam's answers of [2015](https://adventofcode.com/2015)
 
 * Answer for question 1 [Part 1](zengxin/q1/main1.py) & [Part 2](zengxin/q1/main2.py)
@@ -40,10 +37,22 @@ practice code
 * Answer for question 15 [Part 1](zengxin/q15/main1.py) & [Part 2](zengxin/q15/main2.py)
 
 
-
 ## RL's answers of [2015](https://adventofcode.com/2015)
 
-* Answer for all questions here(updated up to #3) [Answers](GRL/solution_for_all.py) 
+* Answer for all questions here(updated up to #3) [Answers](GRL/solution_for_all.py)
 
 
+## Sui's answers of [2015](https://adventofcode.com/2015)
 
+* Answer for all questions [Answers](Sui/solution.q)
+* Example of usage:
+(base) Taos-iMac:Sui sui$ q solutions.q -problem 2015_01_part1
+KDB+ 4.0 2020.03.17 Copyright (C) 1993-2020 Kx Systems
+m64/ 4(16)core 16384MB sui taos-imac.local 127.0.0.1 EXPIRE 2021.05.14 taosuijl@gmail.com KOD #4170899
+
+"result of 2015_01_part1: 280"
+"time usage in milliseconds 0"
+"space usage in bytes 16624"
+q)
+
+* Download of kdb+/q(https://code.kx.com/q/)
