@@ -2,3 +2,5 @@ Travelling Sales man problem - q9
 Look and say - q10 ref: https://www.youtube.com/watch?v=ea7lJkEhytA
 q11 - generate abc to xyz list (three consecutive list)
 q11 - base 26 decode and encode as a to z strings
+q12 - can use generator and decorate to frame the functions
+q14 - use tools to get list data
