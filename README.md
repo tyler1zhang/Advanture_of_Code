@@ -44,7 +44,7 @@ practice code
 
 ## Sui's answers of [2015](https://adventofcode.com/2015)
 
-* Answer for all questions [Answers](Sui/solution.q)
+* Answer for all questions [Answers](Sui/solutions.q)
 * Example of usage:
 ```
 (base) Taos-iMac:Sui sui$ q solutions.q -problem 2015_01_part1
