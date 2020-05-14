@@ -51,9 +51,9 @@ practice code
 KDB+ 4.0 2020.03.17 Copyright (C) 1993-2020 Kx Systems
 m64/ 4(16)core 16384MB sui taos-imac.local 127.0.0.1 EXPIRE 2021.05.14 taosuijl@gmail.com KOD #4170899
 
-"result of 2015_01_part1: 280"
-"time usage in milliseconds 0"
-"space usage in bytes 16624"
+"Result of 2015_01_part1: 280"
+"Time usage in milliseconds 0"
+"Space usage in bytes 16624"
 q)
 ```
 * Download of kdb+/q(https://code.kx.com/q/)
