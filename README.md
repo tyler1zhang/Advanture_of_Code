@@ -46,6 +46,7 @@ practice code
 
 * Answer for all questions [Answers](Sui/solution.q)
 * Example of usage:
+```
 (base) Taos-iMac:Sui sui$ q solutions.q -problem 2015_01_part1
 KDB+ 4.0 2020.03.17 Copyright (C) 1993-2020 Kx Systems
 m64/ 4(16)core 16384MB sui taos-imac.local 127.0.0.1 EXPIRE 2021.05.14 taosuijl@gmail.com KOD #4170899
@@ -54,5 +55,5 @@ m64/ 4(16)core 16384MB sui taos-imac.local 127.0.0.1 EXPIRE 2021.05.14 taosuijl@
 "time usage in milliseconds 0"
 "space usage in bytes 16624"
 q)
-
+```
 * Download of kdb+/q(https://code.kx.com/q/)
