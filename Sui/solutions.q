@@ -3,6 +3,7 @@
 .aoc.201501part1: {(-/)sum each "()" =\: raze x};
 .aoc.201501part2: {first where 0>(+\)0,("()"!1 -1) x};
 .aoc.201502part1: {sum {(prd 2#asc l) + sum neg[l * l], prd each l cross l:"J"$"x" vs x} each x};
+.aoc.201502part2: {sum {(prd l)+2*sum 2#asc l:"J"$"x" vs x} each x};
 
 
 // calculate and profile
