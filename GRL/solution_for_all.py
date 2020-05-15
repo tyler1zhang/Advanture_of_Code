@@ -1,5 +1,7 @@
 import requests
 from pycookiecheat import chrome_cookies #pip3 install pycookiecheat
+import hashlib 
+import re
 
 ###########  Global Function  #############
 
@@ -145,7 +147,299 @@ def q3_2015_part2():
         #change turn    
         santa_to_move=not santa_to_move
         
-    return len(coordinate_set)            
+    return len(coordinate_set)   
+
+def q4_2015(part_num=1):  #shared by part 1 and part 2
+    '''
+    part1:
+        To do this, he needs to find MD5 hashes which, in hexadecimal, start with at least five zeroes. The input to the MD5 hash 
+        is some secret key (your puzzle input, given below) followed by a number in decimal. To mine AdventCoins, you must find Santa 
+        the lowest positive number (no leading zeroes: 1, 2, 3, ...) that produces such a hash.       
+        For example:        
+        If your secret key is abcdef, the answer is 609043, because the MD5 hash of abcdef609043 starts with five zeroes (000001dbbfa...), 
+        and it is the lowest such number to do so.
+        If your secret key is pqrstuv, the lowest number it combines with to make an MD5 hash starting with five zeroes is 1048970; 
+        that is, the MD5 hash of pqrstuv1048970 looks like 000006136ef....
+        Your puzzle input is bgvyzdsv.
+        
+    part2:
+        Now find one that starts with six zeroes.
+    '''
+    input='bgvyzdsv'
+    suffix=10  #no leading zeroes
+    str_to_match='00000' if part_num==1 else '000000'
+    
+    while True: #Exhaustive search, 穷举 until find the match
+        secret_key=input+str(suffix)
+        hash = hashlib.md5(secret_key.encode()).hexdigest()
+        if hash.startswith(str_to_match):
+            return suffix
+        suffix+=1
+ 
+def q5_2015_part1():
+    '''
+        A nice string is one with all of the following properties:       
+        1. It contains at least three vowels (aeiou only), like aei, xazegov, or aeiouaeiouaeiou.
+        2. It contains at least one letter that appears twice in a row, like xx, abcdde (dd), or aabbccdd (aa, bb, cc, or dd).
+        3. It does not contain the strings ab, cd, pq, or xy, even if they are part of one of the other requirements.
+        How many strings are nice?
+    '''   
+    input=get_input('5','2015').splitlines()
+    nice_str_count=0
+    
+    for str_to_check in input: #starting check each line of string
+        # check if contain ab, cd, pq, or xy
+        if 'ab' in str_to_check or 'cd' in str_to_check or 'pq' in str_to_check or 'xy' in str_to_check:
+            continue
+        
+        vowels_count=0
+        appear_twice=False
+        previous_char=''
+        for current_char in str_to_check: # optimize the iteration
+            if current_char in 'aeiou':  #given all input are in lower case
+                vowels_count+=1
+            if current_char==previous_char:
+                appear_twice=True
+            previous_char=current_char
+        
+        if appear_twice and vowels_count>2: # check requirement 1 and 2 fulfilled or not
+            nice_str_count+=1
+                
+    return nice_str_count            
+
+def q5_2015_part2():
+    '''
+        Now, a nice string is one with all of the following properties:
+        
+        1. It contains a pair of any two letters that appears at least twice in the string without overlapping, 
+        like xyxy (xy) or aabcdefgaa (aa), but not like aaa (aa, but it overlaps).
+        2. It contains at least one letter which repeats with exactly one letter between them, 
+        like xyx, abcdefeghi (efe), or even aaa.   
+    '''   
+    input=get_input('5','2015').splitlines()
+    nice_str_count=0
+    
+    for str_to_check in input: #starting check each line of string
+        
+        ## checking requirement 1 ##
+        pair_appear_twice=False        
+        for index in range(2, len(str_to_check)): 
+            # to check if current pair appear in set and not equal previous pair
+            if str_to_check[index-2:index] in str_to_check[index:len(str_to_check)]:
+                pair_appear_twice=True
+                #print(str_to_check[index-1:index+1])
+                break
             
+        ## checking requirement 2 ##
+        appear_inbetween=False        
+        for index in range(2, len(str_to_check)): 
+            #to check if current char equal to the char 2 position ahead
+            if str_to_check[index]==str_to_check[index-2]: 
+                appear_inbetween=True
+                #print(str_to_check[index-2:index+1])
+                break
+        # to check if requirement 1 and 2 fulfilled 
+        if pair_appear_twice and appear_inbetween:
+            nice_str_count+=1
+            print(str_to_check)
+            
+    return nice_str_count    
+
+def q6_2015_part1():
+    '''
+        Lights in your grid are numbered from 0 to 999 in each direction; the lights at each corner are at 
+        0,0, 0,999, 999,999, and 999,0. The instructions include whether to turn on, turn off, or toggle 
+        various inclusive ranges given as coordinate pairs. Each coordinate pair represents opposite corners 
+        of a rectangle, inclusive; a coordinate pair like 0,0 through 2,2 therefore refers to 9 lights in 
+        a 3x3 square. The lights all start turned off.
+        After following the instructions, how many lights are lit?
+    '''
+    input=get_input('6','2015').splitlines()  
+    status_matrix=[[False for x in range(1000)] for y in range(1000)] 
+    
+    for line in input:
+        # parse instruction param
+        instruction=re.findall(r"[\w']+", line)
+        y2=int(instruction[-1])
+        x2=int(instruction[-2])
+        y1=int(instruction[-4])
+        x1=int(instruction[-5])
+        if line.startswith('turn on'):
+            for x in range(x1, x2+1):
+                for y in range(y1, y2+1):
+                    status_matrix[x][y]=True
+        elif line.startswith('turn off'):
+            for x in range(x1, x2+1):
+                for y in range(y1, y2+1):
+                    status_matrix[x][y]=False
+        elif line.startswith('toggle'):
+            for x in range(x1, x2+1):
+                for y in range(y1, y2+1):
+                    status_matrix[x][y]=not status_matrix[x][y]
+    lit_count=0
+    for row in status_matrix:
+        lit_count+=row.count(True)
+        
+    return lit_count
+
+def q6_2015_part2():
+    '''
+        The phrase turn on actually means that you should increase the brightness of those lights by 1.
+        The phrase turn off actually means that you should decrease the brightness of those lights by 1, 
+        to a minimum of zero.        
+        The phrase toggle actually means that you should increase the brightness of those lights by 2.
+        
+        What is the total brightness of all lights combined after following Santa's instructions?
+    '''
+    input=get_input('6','2015').splitlines()  
+    status_matrix=[[0 for x in range(1000)] for y in range(1000)] 
+    
+    for line in input:
+        # parse instruction param
+        instruction=re.findall(r"[\w']+", line)
+        y2=int(instruction[-1])
+        x2=int(instruction[-2])
+        y1=int(instruction[-4])
+        x1=int(instruction[-5])
+        if line.startswith('turn on'):
+            for x in range(x1, x2+1):
+                for y in range(y1, y2+1):
+                    status_matrix[x][y]=status_matrix[x][y]+1
+        elif line.startswith('turn off'):
+            for x in range(x1, x2+1):
+                for y in range(y1, y2+1):
+                    status_matrix[x][y]=max(0,status_matrix[x][y]-1)
+        elif line.startswith('toggle'):
+            for x in range(x1, x2+1):
+                for y in range(y1, y2+1):
+                    status_matrix[x][y]=status_matrix[x][y]+2
+    total_brightness=0
+    for row in status_matrix:
+        for brightness in row:
+            total_brightness+=brightness
+        
+    return total_brightness
+
+def q7_2015_part1():
+    input=get_input('7','2015').splitlines()
+    known_signal={} 
+    last_known_wire=''
+    while True:
+        for line in input: ## to find wire with direct knows signal value
+            wire=line.split(' -> ')[1]
+            signal=line.split(' -> ')[0]
+    
+            if signal.isnumeric(): # case: 123 -> x
+                known_signal[wire]=int(signal)
+                last_known_wire=wire
+                input.remove(line)
+                break
+                
+            instruction=signal.split()
+            if instruction[0]=='NOT' and instruction[1].isnumeric() :  #case: NOT 123 -> h
+                known_signal[wire]=int(65535-int(instruction[1]))
+                last_known_wire=wire
+                input.remove(line)
+                break
+            #case 123 AND 456 ->h
+            elif instruction[0].isnumeric() and instruction[2].isnumeric():
+                if instruction[1]=='AND':
+                    signal=int(instruction[0])&int(instruction[2])
+                if instruction[1]=='OR':
+                    signal=int(instruction[0])|int(instruction[2])
+                if instruction[1]=='LSHIFT':
+                    signal=int(instruction[0])<<int(instruction[2])
+                if instruction[1]=='RSHIFT':
+                    signal=int(instruction[0])>>int(instruction[2])                    
+                
+                known_signal[wire]=signal  
+                last_known_wire=wire                 
+                input.remove(line)  
+                break
+     
+        if last_known_wire=='a': ## to check if wire 'a' value is known
+            return  known_signal[wire] 
+        
+        for index1 in range(len(input)): ## to replace all value-known wire with its value in all circuit
+            list=input[index1].split()
+            for index in range(len(list)):
+                if list[index] == last_known_wire:
+                    list[index]=str(known_signal[last_known_wire])
+                    input[index1]=' '.join(list) 
+            
+    #return get_signal(circuit_dict,'a')
+
+#recursively find up-stream of circuit. but will run into infinite loop for some cases
+#e.g  b AND c ->a,  e AND f ->b, b AND g ->e, 123 ->g, 45 ->e, 67 ->f
+def get_signal(circuit_dict, destination):
+    print('get_signal for ', destination)
+    if destination.isnumeric(): # case: 123 
+        return int(destination)
+    
+    instruction=circuit_dict[destination].split()
+    print(circuit_dict[destination],'-->', destination)
+    if len(instruction)==1: # case: 123 -> x
+        return get_signal(circuit_dict, instruction[0])
+    elif instruction[0]=='NOT':  #case: NOT abc -> h
+        return 65535-get_signal(circuit_dict, instruction[1])   
+    elif instruction[1]=='AND':
+        return get_signal(circuit_dict, instruction[0])&get_signal(circuit_dict, instruction[2])    
+    elif instruction[1]=='OR':
+        return get_signal(circuit_dict, instruction[0])|get_signal(circuit_dict, instruction[2])
+    elif instruction[1]=='LSHIFT':
+        return get_signal(circuit_dict, instruction[0])<<int(instruction[2])
+    elif instruction[1]=='RSHIFT':
+        return get_signal(circuit_dict, instruction[0])>>int(instruction[2])    
+
+def q7_2015_part2():
+    input=get_input('7','2015').splitlines()
+    known_signal={} 
+    last_known_wire=''
+    while True:
+        for line in input: ## to find wire with direct knows signal value
+            wire=line.split(' -> ')[1]
+            signal=line.split(' -> ')[0]
+    
+            if signal.isnumeric(): # case: 123 -> x
+                known_signal[wire]=int(signal)
+                if wire=='b':
+                    known_signal[wire]=956
+                last_known_wire=wire
+                input.remove(line)
+                break
+                
+            instruction=signal.split()
+            if instruction[0]=='NOT' and instruction[1].isnumeric() :  #case: NOT 123 -> h
+                known_signal[wire]=int(65535-int(instruction[1]))
+                last_known_wire=wire
+                input.remove(line)
+                break
+            #case 123 AND 456 ->h
+            elif instruction[0].isnumeric() and instruction[2].isnumeric():
+                if instruction[1]=='AND':
+                    signal=int(instruction[0])&int(instruction[2])
+                if instruction[1]=='OR':
+                    signal=int(instruction[0])|int(instruction[2])
+                if instruction[1]=='LSHIFT':
+                    signal=int(instruction[0])<<int(instruction[2])
+                if instruction[1]=='RSHIFT':
+                    signal=int(instruction[0])>>int(instruction[2])                    
+                
+                known_signal[wire]=signal  
+                last_known_wire=wire                 
+                input.remove(line)  
+                break
+     
+        if last_known_wire=='a': ## to check if wire 'a' value is known
+            return  known_signal[wire] 
+        
+        for index1 in range(len(input)): ## to replace all value-known wire with its value in all circuit
+            list=input[index1].split()
+            for index in range(len(list)):
+                if list[index] == last_known_wire:
+                    list[index]=str(known_signal[last_known_wire])
+                    input[index1]=' '.join(list)         
+
+
 ###########  Execution  #############
-print(q3_2015_part2())
+print(q7_2015_part2())
