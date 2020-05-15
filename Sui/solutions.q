@@ -4,6 +4,8 @@
 .aoc.201501part2: {first where 0>(+\)0,("()"!1 -1) x};
 .aoc.201502part1: {sum {(prd 2#asc l) + sum neg[l * l], prd each l cross l:"J"$"x" vs x} each x};
 .aoc.201502part2: {sum {(prd l)+2*sum 2#asc l:"J"$"x" vs x} each x};
+.aoc.201503part1: {count distinct (+\)(enlist 0 0),("^v<>"!(0 1;0 -1;-1 0;1 0)) raze x};
+.aoc.201503part2: {count distinct raze (+\')(enlist 0 0),/:l where each 0 1 =\: (til count l:("^v<>"!(0 1;0 -1;-1 0;1 0)) raze x) mod 2};
 
 
 // calculate and profile
