@@ -2,6 +2,10 @@ import requests
 from pycookiecheat import chrome_cookies #pip3 install pycookiecheat
 import hashlib 
 import re
+import time
+import json
+from tsp_solver.greedy import solve_tsp #pip3 install tsp_solver2
+from itertools import permutations
 
 ###########  Global Function  #############
 
@@ -15,6 +19,7 @@ def get_input(question_num, year='2015'):
 
 ###########  Starting of Solution  #############
 
+####===>  Day 1 Solution <===####
 def q1_2015_part1():
     '''
         An opening parenthesis, (, means he should go up one floor, and a closing parenthesis, ), means he should go down one floor.
@@ -42,7 +47,8 @@ def q1_2015_part2():
         #print(index, current_floor)
         if current_floor==-1:
             return index
-        
+
+####===>  Day 2 Solution <===####        
 def q2_2015_part1():
     '''
         Fortunately, every present is a box (a perfect right rectangular prism), which makes calculating the required wrapping paper 
@@ -81,6 +87,7 @@ def q2_2015_part2():
         
     return total_area
 
+####===>  Day 3 Solution <===####
 def q3_2015_part1():
     '''
         Santa is delivering presents to an infinite two-dimensional grid of houses.He begins by delivering a present to the house at 
@@ -149,6 +156,7 @@ def q3_2015_part2():
         
     return len(coordinate_set)   
 
+####===>  Day 4 Solution <===####
 def q4_2015(part_num=1):  #shared by part 1 and part 2
     '''
     part1:
@@ -175,7 +183,8 @@ def q4_2015(part_num=1):  #shared by part 1 and part 2
         if hash.startswith(str_to_match):
             return suffix
         suffix+=1
- 
+
+####===>  Day 5 Solution <===#### 
 def q5_2015_part1():
     '''
         A nice string is one with all of the following properties:       
@@ -245,6 +254,7 @@ def q5_2015_part2():
             
     return nice_str_count    
 
+####===>  Day 6 Solution <===####
 def q6_2015_part1():
     '''
         Lights in your grid are numbered from 0 to 999 in each direction; the lights at each corner are at 
@@ -320,6 +330,7 @@ def q6_2015_part2():
         
     return total_brightness
 
+####===>  Day 7 Solution <===####
 def q7_2015_part1():
     input=get_input('7','2015').splitlines()
     known_signal={} 
@@ -438,8 +449,137 @@ def q7_2015_part2():
             for index in range(len(list)):
                 if list[index] == last_known_wire:
                     list[index]=str(known_signal[last_known_wire])
-                    input[index1]=' '.join(list)         
+                    input[index1]=' '.join(list)  
+                           
+####===>  Day 8 Solution <===####
+## use unicode_escape decoder to decode original str to escape form
+## e.g. "\x27" -> "'", however result still retain double colon, need minus 2 for final length 
+def q8_2015_part1():
+    input=get_input('8','2015').splitlines()
+    count_of_code=0
+    count_in_memory=0
+    for line in input:
+        count_of_code+=len(line)
+        count_in_memory+=len(bytes(line, "utf-8").decode("unicode_escape"))-2
+    
+    return count_of_code-count_in_memory
 
+##json.dumps perfectly resolve this problem, e.g. "\x27" -->"\"\\x27\""
+def q8_2015_part2():
+    input=get_input('8','2015').splitlines()
+    count_encoded=0
+    count_original=0
+    for line in input:
+        count_original+=len(line)
+        count_encoded+=len(json.dumps(line))
+     
+    return count_encoded-count_original
+
+####===>  Day 9 Solution <===####
+##typical TSP problem, time complexity O(n^2*2^n)
+def q9_2015_part1():
+    input=get_input('9','2015').splitlines()
+    dist_matrix=[]
+    line_index=-1
+    for row in range(8): ##build the distance matrix
+        dist_list=[]
+        for index in range(row):           
+            data=input[line_index].split()
+            dist_list.append(int(data[4]))
+            line_index-=1
+        dist_matrix.append(dist_list)    
+    ## solve the best path    
+    path = solve_tsp(dist_matrix)
+    ## calculate total distance
+    total_dist=0
+    for index in range(1,len(path)):
+        total_dist+=dist_matrix[max(path[index-1], path[index])][min(path[index-1], path[index])]
+    
+    return total_dist
+
+## Exhaustive search, time complexity O(n!), very high
+def q9_2015_part2(): 
+    input=get_input('9','2015').splitlines()
+    places = set()
+    distances = dict()
+    for line in input:
+        (source, _, dest, _, distance) = line.split()
+        places.add(source)
+        places.add(dest)
+        distances.setdefault(source, dict())[dest] = int(distance)
+        distances.setdefault(dest, dict())[source] = int(distance)
+
+    longest = 0
+    for record in permutations(places):
+        dist = sum(map(lambda x, y: distances[x][y], record[:-1], record[1:]))
+        longest = max(longest, dist)
+    
+    return longest     
+
+####===>  Day 10 Solution <===####
+def q10_2015(repeat_count): 
+    input='1113122113'
+    re_digit = re.compile(r'((\d)\2*)') #find repeated digit
+    for i in range(repeat_count):
+        print('loop', i)
+        input = re_digit.sub(replace,input)
+    return len(input)
+## replace repeated digits to its 'say' form, e.g 11 -> two 1 -> 21
+def replace(match_str): 
+    s = match_str.group(1)
+    return str(len(s)) + s[0]
+##this function takes too long to run 50 times. improved to replace() above   
+def get_next(seq): 
+    k,last,result = 1,seq[0],''
+    for i in range(1,len(seq)):
+        if last==seq[i]:
+            k+=1
+        else:
+            result = result+str(k)+last
+            k=1
+        last = seq[i]
+    result = result+str(k)+last
+    return result
+
+####===>  Day 11 Solution <===####
+def q11_2015_part1():
+    pw =get_input('11','2015').splitlines()[0]
+    while not is_pw_valid(pw):
+        pw=password_increment(pw)
+    return pw
+
+def q11_2015_part2():
+    pw =password_increment(q11_2015_part1())
+    while not is_pw_valid(pw):
+        pw=password_increment(pw)
+    return pw
+
+def password_increment(pw): #create new pw by increment 1
+    pw+='a'   # append 'a' to end
+    for i in range(1, len(pw)): #check if ending with i 'a'
+        if pw[-i:].count('a')==i:
+            increment=2 if pw[-i-1] in {'h','n','k'} else 1 # char before i, o, l
+            new_letter=chr(ord(pw[-i-1]) + increment) if pw[-1-i]!='z' else 'a'
+            pw=pw[:len(pw)-i-1] + new_letter+pw[len(pw)-i:]
+    return pw[:len(pw)-1] # remove appended 'a'
+def is_pw_valid(pw):
+    ##checking letter pairs
+    pairs_set=set()
+    for index in range(1, len(pw)):
+        if pw[index-1]!=pw[index]:
+            continue
+        else: pairs_set.add(pw[index])
+    if len(pairs_set)<2: return False    
+    ##checking straight increasing like bcd
+    for index in range(2, len(pw)):
+        if ord(pw[index])-ord(pw[index-1])==1 and ord(pw[index-1])-ord(pw[index-2])==1:
+            return True    
+    return False    
 
 ###########  Execution  #############
-print(q7_2015_part2())
+start_time=time.time()
+print(q11_2015_part2())
+end_time=time.time()
+print('execution time: %fs'%(end_time-start_time))
+
+
