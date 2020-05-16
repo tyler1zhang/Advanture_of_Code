@@ -33,8 +33,8 @@
                       g:(cross/) {x[0]+til 1+abs(-/)x} each flip "J"$"," vs' (" " vs x) $[i=`to;1 3;2 4];
                       $[i=`on;@[`.aoc.d6;g;+;1];i=`to;@[`.aoc.d6;g;+;2];@[`.aoc.d6;g;{$[x>0;x-:1;x:0]}]]};
                    f each x; sum value .aoc.d6};
-.aoc.201510part1: {count {[n] c:1+(n=flip 1_next\[2;n])?\:0b; raze (c m) ,' n m:where not 1<prev c}/ [40;"J"$'raze x]};
-.aoc.201510part2: {count {[n] c:1+(n=flip 1_next\[2;n])?\:0b; raze (c m) ,' n m:where not 1<prev c}/ [50;"J"$'raze x]};
+.aoc.201510part1: {count {[n] c:1+(n=flip 1_next\[2;n])?\:0b; raze flip (c;n) @\: m:where not 1<prev c}/ [40;"J"$'raze x]};
+.aoc.201510part2: {count {[n] c:1+(n=flip 1_next\[2;n])?\:0b; raze flip (c;n) @\: m:where not 1<prev c}/ [50;"J"$'raze x]};
 
 
 // calculate and profile
