@@ -477,11 +477,14 @@ def q8_2015_part2():
 
 ####===>  Day 9 Solution <===####
 ##typical TSP problem, time complexity O(n^2*2^n)
-def q9_2015_part1():
-    input=get_input('9','2015').splitlines()
+def q9_2015_part1(n=7):
+    if n==7:
+        input=get_input('9','2015').splitlines()
+    else:
+        input= generate_input(n)
     dist_matrix=[]
     line_index=-1
-    for row in range(8): ##build the distance matrix
+    for row in range(n+1): ##build the distance matrix
         dist_list=[]
         for index in range(row):           
             data=input[line_index].split()
@@ -498,8 +501,11 @@ def q9_2015_part1():
     return total_dist
 
 ## Exhaustive search, time complexity O(n!), very high
-def q9_2015_part2(): 
-    input=get_input('9','2015').splitlines()
+def q9_2015_part2(n=7): 
+    if n==7:
+        input=get_input('9','2015').splitlines()
+    else:
+        input= generate_input(n)
     places = set()
     distances = dict()
     for line in input:
@@ -514,7 +520,16 @@ def q9_2015_part2():
         dist = sum(map(lambda x, y: distances[x][y], record[:-1], record[1:]))
         longest = max(longest, dist)
     
-    return longest     
+    return longest
+## to generate input with n+1 cities for simulation purpose
+def generate_input(n=7):
+    from random import randrange
+    input=[]
+    for i in range(n):
+        for j in range(n-i):
+            line='city'+str(i)+' to '+'city'+str(i+j+1)+' = '+str(randrange(100))
+            input.append(line)
+    return input
 
 ####===>  Day 10 Solution <===####
 def q10_2015(repeat_count): 
@@ -576,10 +591,53 @@ def is_pw_valid(pw):
             return True    
     return False    
 
+####===>  Day 12 Solution <===####
+## fastest way, cheating by split whole input string, find all numeric item and sum up
+def q12_2015_part1():
+    input=get_input('12', '2015')
+    data= re.split(':|\s|\n|\[|\]|{|}|,|"',input)
+    sum=0
+    for item in data:
+        if item.isnumeric() or (item.startswith('-') and item[1:].isnumeric()):
+            sum+=int(item)
+    return sum
+
+def q12_2015_part2():
+    input=get_input('12', '2015')
+    json_obj=json.loads(input)
+    data_list=[]
+    sum=0
+    object_to_list(json_obj, data_list) # convert json object to list
+    for item in data_list:
+        if isinstance(item, int):
+            sum+=int(item)
+    return sum
+## convert json object to list(1d array)
+def object_to_list(obj, data_list):
+    ## case of obj is dict
+    if isinstance(obj, dict):
+        ##pre-check if any item with value 'red', then ignore this dict
+        for key, value in obj.items():
+            if value=='red':
+                return 
+        ## no 'red' value, then add each value to data_list          
+        for key, value in obj.items():
+            if isinstance(value, (dict, list)):
+                object_to_list(value, data_list)
+            else:
+                data_list.append(value)
+    ## case of obj is list
+    elif isinstance(obj, list):
+        ## add each item to data_list
+        for item in obj:
+            if isinstance(item, (dict, list)):
+                object_to_list(item, data_list)
+            else:
+                data_list.append(item)
+
 ###########  Execution  #############
 start_time=time.time()
-print(q11_2015_part2())
+result=q12_2015_part2()
 end_time=time.time()
-print('execution time: %fs'%(end_time-start_time))
-
+print('result:',result ,'|| execution time: %fs'%(end_time-start_time))
 
