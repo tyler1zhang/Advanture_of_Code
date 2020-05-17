@@ -634,10 +634,65 @@ def object_to_list(obj, data_list):
                 object_to_list(item, data_list)
             else:
                 data_list.append(item)
+                
+####===>  Day 13 Solution <===####                
+## Exhaustive permutations, time complexity O(n!), very high
+def q13_2015_part1(): 
+    input=get_input('13', '2015').splitlines()
+    guest_set = set()
+    happiness_dict = dict()
+    for line in input: #construct data structure
+        data = line.split()
+        source=data[0]
+        dest=data[10].replace('.', '')
+        happiness=int(data[3]) if data[2]=='gain' else -int(data[3])
+        guest_set.add(source)
+        guest_set.add(dest)
+        happiness_dict.setdefault(source, dict())[dest] = happiness
+    
+    ##there is no difference for rotating the table seating. however it's considered as different case in permutations
+    ##so remove one guest from set for permutations and add him back to end of permutations for calculate happiness
+    ##this way will reduce time complexity from n to n-1
+    last_guest=source  
+    guest_set.remove(last_guest)
+    optimal_happiness =0
+    for record in permutations(guest_set):
+        total_happiness = 0
+        record+=(last_guest,)
+        for i in range(len(record)):
+            total_happiness +=happiness_dict[record[i]][record[i-1]]+happiness_dict[record[i-1]][record[i]]
+        optimal_happiness = max(optimal_happiness, total_happiness)
+    
+    return optimal_happiness
+
+def q13_2015_part2(): 
+    input=get_input('13', '2015').splitlines()
+    guest_set = set()
+    happiness_dict = dict()
+    for line in input: #construct data structure
+        data = line.split()
+        source=data[0]
+        dest=data[10].replace('.', '')
+        happiness=int(data[3]) if data[2]=='gain' else -int(data[3])
+        guest_set.add(source)
+        guest_set.add(dest)
+        happiness_dict.setdefault(source, dict())[dest] = happiness
+    
+    optimal_happiness =0
+    for record in permutations(guest_set):
+        total_happiness = 0
+        ##consider host just sit between first and last guest, 
+        ##then no need calculate happiness between 1st and last guest
+        for i in range(1, len(record)): 
+            total_happiness +=happiness_dict[record[i]][record[i-1]]+happiness_dict[record[i-1]][record[i]]
+        optimal_happiness = max(optimal_happiness, total_happiness)
+    
+    return optimal_happiness
+##通过运行part1，2得出结论，主人的加入让客人的幸福度降低 -_-!!
 
 ###########  Execution  #############
 start_time=time.time()
-result=q12_2015_part2()
+result=q13_2015_part2()
 end_time=time.time()
 print('result:',result ,'|| execution time: %fs'%(end_time-start_time))
 
