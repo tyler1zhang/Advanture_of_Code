@@ -690,9 +690,56 @@ def q13_2015_part2():
     return optimal_happiness
 ##通过运行part1，2得出结论，主人的加入让客人的幸福度降低 -_-!!
 
+def q14_2015_part1():
+    input=get_input('14', '2015').splitlines()
+    total_time=2503
+    max_dist=0
+    for line in input:
+        data=line.split()
+        (speed, fly_time, period, period_dist)=(int(data[3]), int(data[6]), 
+                                                int(data[6])+int(data[13]), int(data[3])*int(data[6]))
+        fly_dist=total_time//period*period_dist + min(total_time%period,fly_time)*speed
+        max_dist=max(max_dist, fly_dist)
+    return max_dist
+
+def q14_2015_part2():
+    input=get_input('14', '2015').splitlines()
+    stats_dict={}
+    total_time=2503
+    for line in input: ##construct each player's statistics
+        data=line.split()
+        stats_dict[data[0]]={'speed':int(data[3]), 
+                            'fly_time':int(data[6]), 
+                            'period':int(data[6])+int(data[13]), 
+                            'period_dist':int(data[3])*int(data[6]),
+                            'score':0}
+    
+    ##scan each second to score players
+    for time_elapsed in range(1, total_time+1):
+        max_dist=0
+        player_to_score=set()
+        for player, stats in stats_dict.items():
+            #flying distance by time_elapsed
+            fly_dist=time_elapsed//stats['period']*stats['period_dist'] +min(time_elapsed%stats['period'], stats['fly_time'])*stats['speed']
+            ##find lead player in this round
+            if fly_dist>max_dist:
+                player_to_score.clear()
+                player_to_score.add(player)
+                max_dist=fly_dist
+            elif fly_dist==max_dist:
+                player_to_score.add(player)
+        for player in player_to_score: # score lead player(s)
+            stats_dict[player]['score']+=1
+    
+    max_score=0 #find max score  
+    for player, stats in stats_dict.items():
+        max_score=max(max_score,  stats['score'])
+        
+    return max_score
+
 ###########  Execution  #############
 start_time=time.time()
-result=q13_2015_part2()
+result=q14_2015_part2()
 end_time=time.time()
-print('result:',result ,'|| execution time: %fs'%(end_time-start_time))
+print('result:',result ,'|| execution time: %s s'%"{:.2f}".format(end_time-start_time))
 
