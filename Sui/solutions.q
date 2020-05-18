@@ -35,6 +35,14 @@
                    f each x; sum value .aoc.d6};
 .aoc.201510part1: {count {[n] c:1+(n=flip 1_next\[2;n])?\:0b; raze flip (c;n) @\: m:where not 1<prev c}/ [40;"J"$'raze x]};
 .aoc.201510part2: {count {[n] c:1+(n=flip 1_next\[2;n])?\:0b; raze flip (c;n) @\: m:where not 1<prev c}/ [50;"J"$'raze x]};
+.aoc.201511part1: {p:$[10h=type x;x;raze x];
+                   .aoc.d11:(.Q.a!til 26);
+                   c1:{any min 1 = 1 _ deltas (next\)[2;.aoc.d11 x]};
+                   c2:{all not "iol" in x};
+                   c3:{and[4<=count distinct p,1+p:where b; 2<=sum b:x=next x]};
+                   .aoc.increment11:{$[not null n:.aoc.d11 ? 1+.aoc.d11 x[y];@[x;y;:;n];[x:@[x;y;:;"a"];.z.s[x;y-1]]]};
+                   while[not all (c1;c2;c3) @\: p; p:.aoc.increment11[p;7]];p};
+.aoc.201511part2: {.aoc.201511part1 .aoc.increment11[;7].aoc.201511part1 x};
 
 
 // calculate and profile
@@ -43,6 +51,6 @@ $[100h=type f:.aoc`$raze "_" vs p;func:f;0N!"No function matches"];
 $[(input_file:`$ssr[p;"part?";"input.txt"]) in key `:.;raw_input:read0 input_file;0N!"No input file matchs"];
 if[all `func`raw_input in key `.;
   r:.Q.ts[func;$[1<count raw_input;enlist raw_input;raw_input]];
-  0N!"Result of ",p,": ", string r 1;
+  0N!"Result of ",p,": ", $[10h=type r 1;r 1;string r 1];
   0N!"Time usage in milliseconds ",string r[0;0];
   0N!"Space usage in bytes ",string r[0;1]];
