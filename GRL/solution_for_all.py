@@ -5,7 +5,7 @@ import re
 import time
 import json
 from tsp_solver.greedy import solve_tsp #pip3 install tsp_solver2
-from itertools import permutations
+from itertools import permutations, combinations
 
 ###########  Global Function  #############
 
@@ -634,10 +634,276 @@ def object_to_list(obj, data_list):
                 object_to_list(item, data_list)
             else:
                 data_list.append(item)
+                
+####===>  Day 13 Solution <===####                
+## Exhaustive permutations, time complexity O(n!), very high
+def q13_2015_part1(): 
+    input=get_input('13', '2015').splitlines()
+    guest_set = set()
+    happiness_dict = dict()
+    for line in input: #construct data structure
+        data = line.split()
+        source=data[0]
+        dest=data[10].replace('.', '')
+        happiness=int(data[3]) if data[2]=='gain' else -int(data[3])
+        guest_set.add(source)
+        guest_set.add(dest)
+        happiness_dict.setdefault(source, dict())[dest] = happiness
+    
+    ##there is no difference for rotating the table seating. however it's considered as different case in permutations
+    ##so remove one guest from set for permutations and add him back to end of permutations for calculate happiness
+    ##this way will reduce time complexity from n to n-1
+    last_guest=source  
+    guest_set.remove(last_guest)
+    optimal_happiness =0
+    for record in permutations(guest_set):
+        total_happiness = 0
+        record+=(last_guest,)
+        for i in range(len(record)):
+            total_happiness +=happiness_dict[record[i]][record[i-1]]+happiness_dict[record[i-1]][record[i]]
+        optimal_happiness = max(optimal_happiness, total_happiness)
+    
+    return optimal_happiness
 
+def q13_2015_part2(): 
+    input=get_input('13', '2015').splitlines()
+    guest_set = set()
+    happiness_dict = dict()
+    for line in input: #construct data structure
+        data = line.split()
+        source=data[0]
+        dest=data[10].replace('.', '')
+        happiness=int(data[3]) if data[2]=='gain' else -int(data[3])
+        guest_set.add(source)
+        guest_set.add(dest)
+        happiness_dict.setdefault(source, dict())[dest] = happiness
+    
+    optimal_happiness =0
+    for record in permutations(guest_set):
+        total_happiness = 0
+        ##consider host just sit between first and last guest, 
+        ##then no need calculate happiness between 1st and last guest
+        for i in range(1, len(record)): 
+            total_happiness +=happiness_dict[record[i]][record[i-1]]+happiness_dict[record[i-1]][record[i]]
+        optimal_happiness = max(optimal_happiness, total_happiness)
+    
+    return optimal_happiness
+##通过运行part1，2得出结论，主人的加入让客人的幸福度降低 -_-!!
+
+####===>  Day 14 Solution <===####    
+def q14_2015_part1():
+    input=get_input('14', '2015').splitlines()
+    total_time=2503
+    max_dist=0
+    for line in input:
+        data=line.split()
+        (speed, fly_time, period, period_dist)=(int(data[3]), int(data[6]), 
+                                                int(data[6])+int(data[13]), int(data[3])*int(data[6]))
+        fly_dist=total_time//period*period_dist + min(total_time%period,fly_time)*speed
+        max_dist=max(max_dist, fly_dist)
+    return max_dist
+
+def q14_2015_part2():
+    input=get_input('14', '2015').splitlines()
+    stats_dict={}
+    total_time=2503
+    for line in input: ##construct each player's statistics
+        data=line.split()
+        stats_dict[data[0]]={'speed':int(data[3]), 
+                            'fly_time':int(data[6]), 
+                            'period':int(data[6])+int(data[13]), 
+                            'period_dist':int(data[3])*int(data[6]),
+                            'score':0}
+    
+    ##scan each second to score players
+    for time_elapsed in range(1, total_time+1):
+        max_dist=0
+        player_to_score=set()
+        for player, stats in stats_dict.items():
+            #flying distance by time_elapsed
+            fly_dist=time_elapsed//stats['period']*stats['period_dist'] +min(time_elapsed%stats['period'], stats['fly_time'])*stats['speed']
+            ##find lead player in this round
+            if fly_dist>max_dist:
+                player_to_score.clear()
+                player_to_score.add(player)
+                max_dist=fly_dist
+            elif fly_dist==max_dist:
+                player_to_score.add(player)
+        for player in player_to_score: # score lead player(s)
+            stats_dict[player]['score']+=1
+    
+    max_score=0 #find max score  
+    for player, stats in stats_dict.items():
+        max_score=max(max_score,  stats['score'])
+        
+    return max_score
+
+####===>  Day 15 Solution <===####    
+def q15_2015_part1():
+    input=get_input('15', '2015').splitlines()
+    total_unit=100
+    ingre_stats=[]
+    for line in input:
+        #’Sprinkles: capacity 2, durability 0, flavor -2, texture 0, calories 3‘
+        data=line.replace(':', '').replace(',', '').split()
+        ingre_stats.append({'ingredient':data[0],
+                            'capacity':int(data[2]), 
+                            'durability':int(data[4]), 
+                            'flavor':int(data[6]), 
+                            'texture':int(data[8]),
+                            'calories':int(data[10]),})
+    ## 100汤匙分配给4种配料，相当于在 '1 1 1 1...'(100个)中插入三个隔板
+    ## 隔板可以选的位置有99个,组合数 c（3，99）
+    max_score=0
+    for record in combinations(range(1, total_unit), len(ingre_stats)-1):
+        units=[record[0], record[1]-record[0],record[2]-record[1],total_unit-record[2]]
+        (capacity, durability, flavor, texture)=(0,0,0,0)
+        for index in range(len(ingre_stats)):
+            capacity+=ingre_stats[index]['capacity']*units[index]
+            durability+=ingre_stats[index]['durability']*units[index]
+            flavor+=ingre_stats[index]['flavor']*units[index]
+            texture+=ingre_stats[index]['texture']*units[index]
+        total_score=max(0,capacity)*max(0,durability)*max(0,flavor)*max(0,texture)
+        max_score=max(max_score, total_score)
+    
+    return max_score
+
+def q15_2015_part2():
+    input=get_input('15', '2015').splitlines()
+    total_unit=100
+    ingre_stats=[]
+    for line in input:
+        #’Sprinkles: capacity 2, durability 0, flavor -2, texture 0, calories 3‘
+        data=line.replace(':', '').replace(',', '').split()
+        ingre_stats.append({'ingredient':data[0],
+                            'capacity':int(data[2]), 
+                            'durability':int(data[4]), 
+                            'flavor':int(data[6]), 
+                            'texture':int(data[8]),
+                            'calories':int(data[10]),})
+    
+    ##更好的方案是先找出所有让calories=500的组合，然后找出其中的highest-scoring
+    ##这样可以排除绝大多数组合，提高运行效率，有时间可以试下
+    max_score=0
+    for record in combinations(range(1, total_unit), len(ingre_stats)-1):
+        units=[record[0], record[1]-record[0],record[2]-record[1],total_unit-record[2]]
+        (capacity, durability, flavor, texture, calories)=(0,0,0,0, 0)
+        for index in range(len(ingre_stats)):
+            capacity+=ingre_stats[index]['capacity']*units[index]
+            durability+=ingre_stats[index]['durability']*units[index]
+            flavor+=ingre_stats[index]['flavor']*units[index]
+            texture+=ingre_stats[index]['texture']*units[index]
+            calories+=ingre_stats[index]['calories']*units[index]
+        if calories!=500:
+            continue
+        total_score=max(0,capacity)*max(0,durability)*max(0,flavor)*max(0,texture)
+        max_score=max(max_score, total_score)
+    
+    return max_score 
+      
+##alternative improved solution for q15 part2 
+def q15_2015_part2_2():
+    input=get_input('15', '2015').splitlines()
+    total_unit=100
+    ingre_stats=[]
+    for line in input:
+        #’Sprinkles: capacity 2, durability 0, flavor -2, texture 0, calories 3‘
+        data=line.replace(':', '').replace(',', '').split()
+        ingre_stats.append({'ingredient':data[0],
+                            'capacity':int(data[2]), 
+                            'durability':int(data[4]), 
+                            'flavor':int(data[6]), 
+                            'texture':int(data[8]),
+                            'calories':int(data[10]),})
+    
+    ##找出所有让calories=500的组合，然后找出其中的highest-scoring
+    ##这样可以排除绝大多数组合，提高运行效率，有时间可以试下
+    max_score=0
+    for i in range(1, 500//ingre_stats[0]['calories']+1):
+        for j in range(1, (500-ingre_stats[0]['calories']*i)//ingre_stats[1]['calories']+1):
+            for k in range(1, (500-ingre_stats[0]['calories']*i-ingre_stats[1]['calories']*j)//ingre_stats[2]['calories']+1):
+                remaining_cal=500-ingre_stats[0]['calories']*i-ingre_stats[1]['calories']*j-ingre_stats[2]['calories']*k
+                n=remaining_cal//ingre_stats[3]['calories']
+                if remaining_cal%ingre_stats[3]['calories']==0 and i+j+k+n==total_unit: 
+                    (capacity, durability, flavor, texture, calories)=(0,0,0,0,0)
+                    units=[i, j, k, n]
+                    for index in range(len(ingre_stats)):
+                        capacity+=ingre_stats[index]['capacity']*units[index]
+                        durability+=ingre_stats[index]['durability']*units[index]
+                        flavor+=ingre_stats[index]['flavor']*units[index]
+                        texture+=ingre_stats[index]['texture']*units[index]
+                    total_score=max(0,capacity)*max(0,durability)*max(0,flavor)*max(0,texture)
+                    max_score=max(max_score, total_score)                   
+    
+    return max_score   
+
+####===>  Day 16 Solution <===####    
+def q16_2015_part1():
+    input=get_input('16', '2015').splitlines()
+    msg={'children': '3', 'cats': '7', 'samoyeds': '2', 'pomeranians': '3', 'akitas': '0', 
+         'vizslas': '0', 'goldfish': '5', 'trees': '3', 'cars': '2', 'perfumes': '1'}    
+    for line in input:
+        data=line.replace(':','').replace(',','').split()
+        sue_info={data[2]:data[3], data[4]:data[5], data[6]:data[7]}
+        #find items in common, only if 3 common items, then must be the Aunt Sue
+        if len(msg.items() & sue_info.items())==3:
+            return data[1]
+
+def q16_2015_part2():
+    input=get_input('16', '2015').splitlines()
+    #append '>' or '<' to ranges value
+    msg={'children': '3', 'cats': '>7', 'samoyeds': '2', 'pomeranians': '<3', 'akitas': '0', 
+         'vizslas': '0', 'goldfish': '<5', 'trees': '>3', 'cars': '2', 'perfumes': '1'}    
+    for line in input:
+        data=line.replace(':','').replace(',','').split()
+        ## update value matched items to same value as in msg for cats/trees/pomeranians/goldfish
+        for i in [2, 4, 6]:
+            if data[i]=='cats' and int(data[i+1])>7: data[i+1]='>7'
+            elif data[i]=='trees' and int(data[i+1])>3: data[i+1]='>3'
+            elif data[i]=='pomeranians' and int(data[i+1])<3: data[i+1]='<3'
+            elif data[i]=='goldfish' and int(data[i+1])<5: data[i+1]='<5'
+        sue_info={data[2]:data[3], data[4]:data[5], data[6]:data[7]}
+        ##find items in common, only if 3 common items, then must be the Aunt Sue
+        if len(msg.items() & sue_info.items())==3:
+            return data[1]
+ 
+####===>  Day 17 Solution <===####      
+def q17_2015_part1():
+    input=get_input('17', '2015').splitlines()
+    total_liter=150
+    containers=[]
+    for line in input:
+       containers.append(int(line)) 
+    containers.sort()
+    return find_solution(containers, total_liter)            
+##recursively divide the problem into 1)with the first container involved 2)without the first container involved
+##list must be sorted for this solution to work          
+def find_solution(list, liter):
+    if not list or liter<list[0]:
+        return 0
+    elif liter==list[0]:
+        return 1+find_solution(list[1:],liter)    
+    return find_solution(list[1:],liter)+find_solution(list[1:],liter-list[0])
+
+def q17_2015_part2():
+    input=get_input('17', '2015').splitlines()
+    total_liter=150
+    counter=0
+    containers=[]
+    for line in input:
+       containers.append(int(line)) 
+    containers.sort()
+    ##search combination from the possible minimum: total_liter//containers[-1]+1
+    for n in range(total_liter//containers[-1]+1, total_liter//containers[0]+1):
+        for c in combinations(containers, n):
+            if sum(c)== total_liter:
+                counter+=1
+        if counter>0:
+            return counter      
+    
 ###########  Execution  #############
 start_time=time.time()
-result=q12_2015_part2()
+result=q17_2015_part2()
 end_time=time.time()
-print('result:',result ,'|| execution time: %fs'%(end_time-start_time))
+print('result:',result ,'|| execution time: %s s'%"{:.2f}".format(end_time-start_time))
 
