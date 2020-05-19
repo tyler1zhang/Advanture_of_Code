@@ -43,6 +43,8 @@
                    .aoc.increment11:{$[not null n:.aoc.d11 ? 1+.aoc.d11 x[y];@[x;y;:;n];[x:@[x;y;:;"a"];.z.s[x;y-1]]]};
                    while[not all (c1;c2;c3) @\: p; p:.aoc.increment11[p;7]];p};
 .aoc.201511part2: {.aoc.201511part1 .aoc.increment11[;7].aoc.201511part1 x};
+.aoc.201512part1: {sum l where -9h=type each l:(raze/){$[9h=abs type x;x;10h=type x;`$x;99h=type x;.z.s each value x;.z.s each x]} .j.k raze x};
+.aoc.201512part2: {sum l where 9h=abs type each l:(raze/){$[9h=abs type x;x;10h=type x;`$x;99h=type x;$[any "red" ~/: x;();.z.s each value x];.z.s each x]} .j.k raze x};
 
 
 // calculate and profile
