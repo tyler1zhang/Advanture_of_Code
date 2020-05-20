@@ -866,10 +866,44 @@ def q16_2015_part2():
         ##find items in common, only if 3 common items, then must be the Aunt Sue
         if len(msg.items() & sue_info.items())==3:
             return data[1]
+ 
+####===>  Day 17 Solution <===####      
+def q17_2015_part1():
+    input=get_input('17', '2015').splitlines()
+    total_liter=150
+    containers=[]
+    for line in input:
+       containers.append(int(line)) 
+    containers.sort()
+    return find_solution(containers, total_liter)            
+##recursively divide the problem into 1)with the first container involved 2)without the first container involved
+##list must be sorted for this solution to work          
+def find_solution(list, liter):
+    if not list or liter<list[0]:
+        return 0
+    elif liter==list[0]:
+        return 1+find_solution(list[1:],liter)    
+    return find_solution(list[1:],liter)+find_solution(list[1:],liter-list[0])
+
+def q17_2015_part2():
+    input=get_input('17', '2015').splitlines()
+    total_liter=150
+    counter=0
+    containers=[]
+    for line in input:
+       containers.append(int(line)) 
+    containers.sort()
+    ##search combination from the possible minimum: total_liter//containers[-1]+1
+    for n in range(total_liter//containers[-1]+1, total_liter//containers[0]+1):
+        for c in combinations(containers, n):
+            if sum(c)== total_liter:
+                counter+=1
+        if counter>0:
+            return counter      
     
 ###########  Execution  #############
 start_time=time.time()
-result=q16_2015_part2()
+result=q17_2015_part2()
 end_time=time.time()
 print('result:',result ,'|| execution time: %s s'%"{:.2f}".format(end_time-start_time))
 
