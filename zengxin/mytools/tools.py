@@ -1,4 +1,3 @@
-#!/usr/bin/evn python
 
 def read_file(type):
     with open('input') as f:

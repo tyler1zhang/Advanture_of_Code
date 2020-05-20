@@ -1,6 +1,10 @@
-Travelling Sales man problem - q9
-Look and say - q10 ref: https://www.youtube.com/watch?v=ea7lJkEhytA
+q9 - Travelling Sales man problem, permutation
+q10 - ref: https://www.youtube.com/watch?v=ea7lJkEhytA, Look and say math
 q11 - generate abc to xyz list (three consecutive list)
 q11 - base 26 decode and encode as a to z strings
 q12 - can use generator and decorate to frame the functions
+q13 - permutation
 q14 - use tools to get list data
+q16 - use zip to generate dict, from list to dict
+q17 - combination 
+change email to make sure user is correct
