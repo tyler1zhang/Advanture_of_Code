@@ -55,6 +55,11 @@
                    eFunc:{v:$[-7h in t:type each i:x[`input];@[i;where -11h=t;@[value;;{::}]];@[value;;{::}] each i where -11h=t];
                           x[`output] set .[.aoc[x`gate];v;{::}]};
                    while[null @[value;`a;{::}];eFunc each cTab];a};
+.aoc.201508part1: {cb:{count ss[-1 _ 1 _ x;"\\\\"]};
+                   cs:{count ss[-1 _ 1 _ x;"\\\""]};
+                   cx:{3 * count (except/) 0 1 + ss[-1 _ 1 _ x;] each ("\\x";"\\\\")};
+                   sum {[x;cb;cs;cx] 2 + sum (cb;cs;cx) @\: x}[;cb;cs;cx] each x};
+.aoc.201508part2: {sum {2 + sum any ("\"";"\\") =\: x} each x};
 .aoc.201510part1: {count {[n] c:1+(n=flip 1_next\[2;n])?\:0b; raze flip (c;n) @\: m:where not 1<prev c}/ [40;"J"$'raze x]};
 .aoc.201510part2: {count {[n] c:1+(n=flip 1_next\[2;n])?\:0b; raze flip (c;n) @\: m:where not 1<prev c}/ [50;"J"$'raze x]};
 .aoc.201511part1: {p:$[10h=type x;x;raze x];
