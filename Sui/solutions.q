@@ -5,6 +5,7 @@
 .aoc.LSHIFT:{0b sv next/[y;0b vs x]};
 .aoc.RSHIFT:{0b sv prev/[y;0b vs x]};
 .aoc.SELF:{x};
+.aoc.perm:{{raze x{x,/:y except x}\:y}[;y]/[x-1;y]};
 
 
 // solutions
@@ -61,10 +62,10 @@
                    sum {[x;cb;cs;cx] 2 + sum (cb;cs;cx) @\: x}[;cb;cs;cx] each x};
 .aoc.201508part2: {sum {2 + sum any ("\"";"\\") =\: x} each x};
 .aoc.201509part1: {d:(`$l[;0 2],l[;2 0])!"J"${x,x}(l:" " vs' x)[;4];
-                   rl:{raze x{x,/:y except x}\:y}[;cl]/[(count cl)-1;cl:distinct `$raze l[;0 2]];
+                   rl:.aoc.perm[count cl;cl:distinct `$raze l[;0 2]];
                    min {sum y x,'next x}[;d] each rl};
 .aoc.201509part2: {d:(`$l[;0 2],l[;2 0])!"J"${x,x}(l:" " vs' x)[;4];
-                   rl:{raze x{x,/:y except x}\:y}[;cl]/[(count cl)-1;cl:distinct `$raze l[;0 2]];
+                   rl:.aoc.perm[count cl;cl:distinct `$raze l[;0 2]];
                    max {sum y x,'next x}[;d] each rl};
 .aoc.201510part1: {count {[n] c:1+(n=flip 1_next\[2;n])?\:0b; raze flip (c;n) @\: m:where not 1<prev c}/ [40;"J"$'raze x]};
 .aoc.201510part2: {count {[n] c:1+(n=flip 1_next\[2;n])?\:0b; raze flip (c;n) @\: m:where not 1<prev c}/ [50;"J"$'raze x]};
