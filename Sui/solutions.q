@@ -6,6 +6,7 @@
 .aoc.RSHIFT:{0b sv prev/[y;0b vs x]};
 .aoc.SELF:{x};
 .aoc.perm:{{raze x{x,/:y except x}\:y}[;y]/[x-1;y]};
+.aoc.lookAndSay:{[n] c:1+(n=flip 1_next\[2;n])?\:0b; raze flip (c;n) @\: m:where not 1<prev c};
 
 
 // solutions
@@ -67,8 +68,8 @@
 .aoc.201509part2: {d:(`$l[;0 2],l[;2 0])!"J"${x,x}(l:" " vs' x)[;4];
                    rl:.aoc.perm[count cl;cl:distinct `$raze l[;0 2]];
                    max {sum y x,'next x}[;d] each rl};
-.aoc.201510part1: {count {[n] c:1+(n=flip 1_next\[2;n])?\:0b; raze flip (c;n) @\: m:where not 1<prev c}/ [40;"J"$'raze x]};
-.aoc.201510part2: {count {[n] c:1+(n=flip 1_next\[2;n])?\:0b; raze flip (c;n) @\: m:where not 1<prev c}/ [50;"J"$'raze x]};
+.aoc.201510part1: {count .aoc.lookAndSay/ [40;"J"$'raze x]};
+.aoc.201510part2: {count .aoc.lookAndSay/ [50;"J"$'raze x]};
 .aoc.201511part1: {p:$[10h=type x;x;raze x];
                    .aoc.d11:(.Q.a!til 26);
                    c1:{any min 1 = 1 _ deltas (next\)[2;.aoc.d11 x]};
@@ -79,6 +80,14 @@
 .aoc.201511part2: {.aoc.201511part1 .aoc.increment11[;7].aoc.201511part1 x};
 .aoc.201512part1: {sum l where -9h=type each l:(raze/){$[9h=abs type x;x;10h=type x;`$x;99h=type x;.z.s each value x;.z.s each x]} .j.k raze x};
 .aoc.201512part2: {sum l where 9h=abs type each l:(raze/){$[9h=abs type x;x;10h=type x;`$x;99h=type x;$[any "red" ~/: x;();.z.s each value x];.z.s each x]} .j.k raze x};
+.aoc.201513part1: {d:(`$l[;0 10])!"J"$((("gain";"lose")!"+-") l[;2]),'(l:" " vs' -1_'raw_input)[;3];
+                   sl:.aoc.perm[count gl;gl:distinct `$raze l[;0 10]];
+                   max {sum y {x, reverse each x} x,'1 rotate x}[;d] each sl};
+.aoc.201513part2: {d:(`$l[;0 10])!"J"$((("gain";"lose")!"+-") l[;2]),'(l:" " vs' -1_'raw_input)[;3];
+                   nd:({x, reverse each x} `Sui,'gl)!(2*count gl:distinct `$raze l[;0 10])#0;
+                   nd:d,nd;
+                   sl:.aoc.perm[count ngl;ngl:`Sui,gl];
+                   max {sum y {x, reverse each x} x,'1 rotate x}[;nd] each sl};
 
 
 // calculate and profile
