@@ -8,3 +8,5 @@ q14 - use tools to get list data
 q16 - use zip to generate dict, from list to dict
 q17 - combination 
 change email to make sure user is correct
+q18 - concatenate list https://stackoverflow.com/questions/12902980/how-to-allow-list-append-method-to-return-the-new-list
+q18 - for any nested list like [[]], if re-assign variable pointer, need to re-assign to the individual final level
