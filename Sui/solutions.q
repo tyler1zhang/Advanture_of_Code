@@ -1,9 +1,10 @@
 // util functions
 .aoc.AND:{0b sv (and/) 0b vs' x,y};
 .aoc.OR:{0b sv (or/) 0b vs' x,y};
-.aoc.NOT:{(2 xexp 16) + 0b sv not 0b vs x};
+.aoc.NOT:{(`long$2 xexp 16) + 0b sv not 0b vs x};
 .aoc.LSHIFT:{0b sv next/[y;0b vs x]};
 .aoc.RSHIFT:{0b sv prev/[y;0b vs x]};
+.aoc.SELF:{x};
 
 
 // solutions
@@ -33,6 +34,27 @@
                       g:(cross/) {x[0]+til 1+abs(-/)x} each flip "J"$"," vs' (" " vs x) $[i=`to;1 3;2 4];
                       $[i=`on;@[`.aoc.d6;g;+;1];i=`to;@[`.aoc.d6;g;+;2];@[`.aoc.d6;g;{$[x>0;x-:1;x:0]}]]};
                    f each x; sum value .aoc.d6};
+.aoc.201507part1: {cs:" " vs' x;
+                   inputs:{x where not x in\: ("AND";"OR";"NOT";"LSHIFT";"RSHIFT")} each -2_'cs;
+                   gates:{first `$x where x in\: ("AND";"OR";"NOT";"LSHIFT";"RSHIFT")} each -2_'cs;
+                   outputs:`$last each cs;
+                   iFunc:{@[;where not all each x in .Q.a;"J"$]@[x;where all each x in .Q.a;`$]};
+                   cTab:update iFunc each input from flip `output`input`gate!(outputs;inputs;gates);
+                   cTab:update gate:`SELF from cTab where gate=`;
+                   eFunc:{v:$[-7h in t:type each i:x[`input];@[i;where -11h=t;@[value;;{::}]];@[value;;{::}] each i where -11h=t];
+                          x[`output] set .[.aoc[x`gate];v;{::}]};
+                   while[null @[value;`a;{::}];eFunc each cTab];a};
+.aoc.201507part2: {cs:" " vs' x;
+                   inputs:{x where not x in\: ("AND";"OR";"NOT";"LSHIFT";"RSHIFT")} each -2_'cs;
+                   gates:{first `$x where x in\: ("AND";"OR";"NOT";"LSHIFT";"RSHIFT")} each -2_'cs;
+                   outputs:`$last each cs;
+                   iFunc:{@[;where not all each x in .Q.a;"J"$]@[x;where all each x in .Q.a;`$]};
+                   cTab:update iFunc each input from flip `output`input`gate!(outputs;inputs;gates);
+                   cTab:update gate:`SELF from cTab where gate=`;
+                   cTab:update input:enlist enlist 16076 from cTab where output=`b;
+                   eFunc:{v:$[-7h in t:type each i:x[`input];@[i;where -11h=t;@[value;;{::}]];@[value;;{::}] each i where -11h=t];
+                          x[`output] set .[.aoc[x`gate];v;{::}]};
+                   while[null @[value;`a;{::}];eFunc each cTab];a};
 .aoc.201510part1: {count {[n] c:1+(n=flip 1_next\[2;n])?\:0b; raze flip (c;n) @\: m:where not 1<prev c}/ [40;"J"$'raze x]};
 .aoc.201510part2: {count {[n] c:1+(n=flip 1_next\[2;n])?\:0b; raze flip (c;n) @\: m:where not 1<prev c}/ [50;"J"$'raze x]};
 .aoc.201511part1: {p:$[10h=type x;x;raze x];
@@ -48,11 +70,11 @@
 
 
 // calculate and profile
-p:raze (.Q.opt .z.x) `problem;
-$[100h=type f:.aoc`$raze "_" vs p;func:f;0N!"No function matches"];
-$[(input_file:`$ssr[p;"part?";"input.txt"]) in key `:.;raw_input:read0 input_file;0N!"No input file matchs"];
+problem:raze (.Q.opt .z.x) `problem;
+$[100h=type f:.aoc`$raze "_" vs problem;func:f;0N!"No function matches"];
+$[(input_file:`$ssr[problem;"part?";"input.txt"]) in key `:.;raw_input:read0 input_file;0N!"No input file matchs"];
 if[all `func`raw_input in key `.;
   r:.Q.ts[func;$[1<count raw_input;enlist raw_input;raw_input]];
-  0N!"Result of ",p,": ", $[10h=type r 1;r 1;string r 1];
+  0N!"Result of ",problem,": ", $[10h=type r 1;r 1;string r 1];
   0N!"Time usage in milliseconds ",string r[0;0];
   0N!"Space usage in bytes ",string r[0;1]];
