@@ -6,6 +6,7 @@ import time
 import json
 from tsp_solver.greedy import solve_tsp #pip3 install tsp_solver2
 from itertools import permutations, combinations
+import copy
 
 ###########  Global Function  #############
 
@@ -900,10 +901,140 @@ def q17_2015_part2():
                 counter+=1
         if counter>0:
             return counter      
+
+####===>  Day 18 Solution <===####
+def q18_2015(total_steps=100, part=1): #shared by part1 and part2
+    '''
+        A light which is on stays on when 2 or 3 neighbors are on, and turns off otherwise.
+        A light which is off turns on if exactly 3 neighbors are on, and stays off otherwise.
+    '''
+    input=get_input('18', '2015').splitlines()
+    ##surround the 100*100 matrix by circle of 0, then 102*102
+    ##then no light will be at the edge and outside extra 0 won't affect the calculation
+    light_matrix=[[0 for i in range(len(input)+2)]]
+    for line in input:
+        line='0'+line.replace('#','1').replace('.','0')+'0'
+        light_matrix.append(list(map(int, list(line))))
+    light_matrix.append([0 for i in range(len(input)+2)])   
+    ##find status for next step
+    for i in range(total_steps):
+        if part==2:
+            (light_matrix[1][1], light_matrix[1][-2], light_matrix[-2][1], light_matrix[-2][-2])=(1,1,1,1)
+        light_matrix=next_step(light_matrix)
+    if part==2:
+        (light_matrix[1][1], light_matrix[1][-2], light_matrix[-2][1], light_matrix[-2][-2])=(1,1,1,1)
+    ## find total count of light on
+    total_on=0
+    for i in range(len(light_matrix)):
+        total_on+=sum(light_matrix[i])
+    return total_on
+            
+def next_step(orin_matrix):
+    # make sure clone each element rather than only 1st-layer child
+    new_matrix=copy.deepcopy(orin_matrix)
+    for i in range(1, len(orin_matrix)-1):
+        for j in range(1, len(orin_matrix[i])-1):
+            neighbors_on=sum(orin_matrix[i-1][j-1:j+2])+sum(orin_matrix[i+1][j-1:j+2])+orin_matrix[i][j-1]+orin_matrix[i][j+1]
+            if neighbors_on==3:
+                new_matrix[i][j]=1
+            elif orin_matrix[i][j]==1 and neighbors_on!=2:
+                new_matrix[i][j]=0
+    return new_matrix
+
+####===>  Day 19 Solution <===####      
+def q19_2015_part1():
+    input =get_input('19', '2015').splitlines()
+    molecule_set=set()
+    molecule=input[-1]
+    for line in input[:-2]:
+        (to_find, _, replacement)=line.split()
+        create_molecule(to_find, replacement, molecule, molecule_set)
+    return len(molecule_set)
+
+def create_molecule(to_find, replacement, molecule, molecule_set):
+    for match in re.finditer(to_find, molecule):
+        #split string into 2 by match position, replace the first match in second string, then merge
+        position=match.start()
+        first_part = molecule[:position]
+        second_part = molecule[position:]
+        second_part = second_part.replace(to_find, replacement, 1)
+        molecule_set.add( first_part + second_part) 
+       
+def q19_2015_part2():
+    input =get_input('19', '2015').splitlines() 
+    rep={}  # to store all replacement map
+    ## after observation by find_pattern() and replacement dictionary, pattern *Rn***Ar can only be produced 
+    ## from replacement dictionary which is not dividable anymore. all following logic is based on this
+    special_rep={} # to store Rn***Ar pattern map
+    (line, molecule)=(input[0], input[-1])
+    molecule_set={molecule}
+    for line in input[:-2]:
+        replacement=line.replace('=>', '').split()
+        if 'Ar' in replacement[1]:
+            special_rep[replacement[1]]=replacement[0]
+        rep[replacement[1]]=replacement[0]
+        
+    ## to store all 2-step achievable map for special_rep. e.g. Al => ThRnFAr => ThCaRnFAr
+    ## this is very useful for quick reference of replacement in replace_with_rep
+    rep_2step={} 
+    for k, v in special_rep.items():
+        for k1, v1 in rep.items():
+            if v1 in k.split('R')[0]:
+                rep_2step[k.split('R')[0].replace(v1, k1)+'R'+k.split('R')[1]]=v
     
+    replacements={'special_rep':special_rep, 'rep':rep, 'rep_2step':rep_2step,}
+    
+    step_counter=[0,] #need pass to function by reference
+    while True:
+        #find the first matched to above, start with 'R' end with 'r', Rn***Ar
+        molecule=replace_with_rep(molecule, replacements, step_counter)
+        if 'r' not in molecule: #once no Rn***Ar pattern, just replace until get 'e'
+            molecule=replace_with_rep(molecule, replacements, step_counter, 0, len(molecule))
+            return step_counter[0]
+        end_pos  =molecule.index('r')
+        start_pos =molecule[:end_pos].rfind('R')
+        molecule=replace_with_rep(molecule, replacements, step_counter, start_pos, end_pos) 
+          
+##replace specific range of molecule with replacements dictionary
+def replace_with_rep(molecule, replacements, step_counter, start_pos=-1, end_pos=0):
+    m_before=''
+    if start_pos==-1: # for whole molecule replacement
+        m_after=molecule 
+        rep=replacements['special_rep']
+    else: # replacement for only special pattern
+        m_after= molecule[start_pos:end_pos+1]
+        rep=replacements['rep']
+    while m_before!=m_after:
+        m_before=m_after
+        for k, v in rep.items():
+            if k in m_after:
+                step_counter[0]+=m_after.count(k)
+                m_after=m_after.replace(k, v)
+                
+    if start_pos!=-1:
+        #while m_after not in replacements['special_rep']:
+        for k, v in replacements['rep_2step'].items():
+            to_match=molecule[max(0,start_pos-15):start_pos]+m_after
+            if k in to_match:
+                to_match=to_match.replace(k, v)
+                step_counter[0]+=2
+                return molecule[:max(0,start_pos-15)]+to_match+molecule[end_pos+1:]
+        m_after=molecule[:start_pos]+m_after+molecule[end_pos+1:]
+    return m_after
+## all patterns starts with *Rn and end with Ar 
+def find_pattern(rep):
+    s=set()
+    for k in rep.keys():
+        for v in rep.values():      
+            if v in k:
+                k=k.replace(v, '*')
+        if k != len(k) * '*': 
+            s.add(k)
+    print(s)                     
+       
 ###########  Execution  #############
 start_time=time.time()
-result=q17_2015_part2()
+result=q19_2015_part2()
 end_time=time.time()
 print('result:',result ,'|| execution time: %s s'%"{:.2f}".format(end_time-start_time))
 
