@@ -7,6 +7,8 @@ import json
 from tsp_solver.greedy import solve_tsp #pip3 install tsp_solver2
 from itertools import permutations, combinations
 import copy
+from functools import reduce
+from math import factorial, ceil
 
 ###########  Global Function  #############
 
@@ -1031,10 +1033,50 @@ def find_pattern(rep):
         if k != len(k) * '*': 
             s.add(k)
     print(s)                     
+
+####===>  Day 20 Solution <===####  
+def q20_2015_part1():
+    input=int(get_input('20', '2015')) #29000000
+    ##if house number =n!, then this house will get more presents then any house < n.could easy prove
+    ## use this to estimate lower and up bound of solution     
+    n=house=1
+    while presents_number(factorial(n))<input:
+        n+=1
+    house=factorial(n-1)
+    while presents_number(house)<input:
+        house+=1    
+    return house          
+def presents_number(n):    #to get total presents of nth house
+    total, squrt, flr_sqrt=0, n**0.5, int(n**0.5)    
+    for i in range(1, flr_sqrt+1 ):
+         if n % i == 0:
+             total+=i+n//i
+    if flr_sqrt==squrt:
+        total-=flr_sqrt
+    return total*10
+
+##tried approach in part1 which run very long as divide operation is high cost
+##try iterate elf and its delivered presents to each house then find the answer
+def q20_2015_part2():
+    input=int(get_input('20', '2015')) #29000000
+    ##house n get at lease 11*n presents hence upper bound is input/11. can narrow down further by trying 2^n
+    max=int(input/11)  
+    presents=[0]*max
+    for elf in range(1, max):  #iteration from 1st elf to max
+        count=0
+        for house in range(elf, max, elf): #nth elf delivers to house n, 2n, 3n.. present 11n until count to 50
+            count+=1
+            presents[house]+=elf*11
+            if count==50:break
+    
+    for house in range(1, max): #search the answer
+        if presents[house]>=input: return house
+        
+ ## part1 use less memory but more time. vice versa for part2 ##   
        
 ###########  Execution  #############
-start_time=time.time()
-result=q19_2015_part2()
+start_time=time.time()+1.2  #realized get_input() costs roughly 1.2s which should not be counted for execution
+result=q20_2015_part2()
 end_time=time.time()
 print('result:',result ,'|| execution time: %s s'%"{:.2f}".format(end_time-start_time))
 
