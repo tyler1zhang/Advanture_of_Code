@@ -88,6 +88,8 @@
                    nd:d,nd;
                    sl:.aoc.perm[count gl;gl];
                    max {sum y {x, reverse each x} x,'1 rotate x}[;nd] each `Sui,/:sl};
+.aoc.201514part1: {max {(x*y*2503 div (y+z))+$[y<=m:2503 mod (y+z);x*y;x*m]} .' n @' where each not null n:"J"$" " vs' x};
+.aoc.201514part2: {max sum each m =\: max m:({[x;y;z;t](x*y*t div (y+z))+$[y<=m:t mod (y+z);x*y;x*m]} .' n @' where each not null n:"J"$" " vs' x) @/:\: 1+til 2503};
 
 
 // calculate and profile
