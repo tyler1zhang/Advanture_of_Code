@@ -81,13 +81,13 @@
 .aoc.201512part1: {sum l where -9h=type each l:(raze/){$[9h=abs type x;x;10h=type x;`$x;99h=type x;.z.s each value x;.z.s each x]} .j.k raze x};
 .aoc.201512part2: {sum l where 9h=abs type each l:(raze/){$[9h=abs type x;x;10h=type x;`$x;99h=type x;$[any "red" ~/: x;();.z.s each value x];.z.s each x]} .j.k raze x};
 .aoc.201513part1: {d:(`$l[;0 10])!"J"$((("gain";"lose")!"+-") l[;2]),'(l:" " vs' -1_'raw_input)[;3];
-                   sl:.aoc.perm[count gl;gl:distinct `$raze l[;0 10]];
-                   max {sum y {x, reverse each x} x,'1 rotate x}[;d] each sl};
+                   sl:.aoc.perm[count pl;pl:gl except hg:first gl:distinct `$raze l[;0 10]];
+                   max {sum y {x, reverse each x} x,'1 rotate x}[;d] each hg,/:sl};
 .aoc.201513part2: {d:(`$l[;0 10])!"J"$((("gain";"lose")!"+-") l[;2]),'(l:" " vs' -1_'raw_input)[;3];
                    nd:({x, reverse each x} `Sui,'gl)!(2*count gl:distinct `$raze l[;0 10])#0;
                    nd:d,nd;
-                   sl:.aoc.perm[count ngl;ngl:`Sui,gl];
-                   max {sum y {x, reverse each x} x,'1 rotate x}[;nd] each sl};
+                   sl:.aoc.perm[count gl;gl];
+                   max {sum y {x, reverse each x} x,'1 rotate x}[;nd] each `Sui,/:sl};
 
 
 // calculate and profile
