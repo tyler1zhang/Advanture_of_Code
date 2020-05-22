@@ -1,6 +1,9 @@
 # Travelling Salesperson Problems, only can solve to a small sets, otherwise too big to iterate
-
+import time
 import itertools
+import sys
+sys.path.append("..")
+from mytools import tools
 
 def getNeighbourHappiness():
     HappinessPoints = []
@@ -13,7 +16,7 @@ def getNeighbourHappiness():
         HappinessPoints.append([linelist[0], linelist[-1], int(linelist[3])]) if linelist[2]=="gain" else HappinessPoints.append([linelist[0], linelist[-1], int(linelist[3])*-1])
         Names.append(linelist[0])
         NameList = list(set(Names))
-    print(HappinessPoints, NameList)
+    # print(HappinessPoints, NameList)
     return HappinessPoints, NameList
     
 getNeighbourHappiness()
@@ -32,11 +35,13 @@ def calculatePoints(sitting, HappinessPoints):
     # get the new points when include myself, to remove the samllest impact neighbore point effect
     points.sort(reverse=True)
     points.pop()
-    print(sum(points), originalPoints)
+    # print(sum(points), originalPoints)
     return sum(points), originalPoints
 
 resultsNew = []
 resultsOriginal = []
+
+@tools.get_time
 def main():
     HappinessPoints, NameList = getNeighbourHappiness()
 
@@ -55,5 +60,9 @@ def main():
 
     # get the max value 
     print("highest point for each case: ", max(resultsNew), max(resultsOriginal))
+
+# start_time = time.time()
+# main()
+# print(time.time() - start_time)
 
 main()
