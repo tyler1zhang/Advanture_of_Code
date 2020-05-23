@@ -97,6 +97,10 @@
                    e:"J"$(" " vs' x)[;10];
                    c:c where 500=sum each e */: c:{x,100 - sum x} each raze/[2;] {$[3h=count x;x;.z.s each x ,/: til 101 - sum x]} each til 101;
                    max {prd @[s;where 0>s:sum x * y;:;0]}[f;] each c};
+.aoc.201516part1: {d:`children`cats`samoyeds`pomeranians`akitas`vizslas`goldfish`trees`cars`perfumes!3 7 2 3 0 0 5 3 2 1;
+                   first value first as where {all (value x)=y key x}[;d] each 1_'as:{(`$x[0 2 4 6])!"J"$x[1 3 5 7]} each " " vs' {ssr[;",";""]ssr[x;":";""]} each x};
+.aoc.201516part2: {d:`children`cats`samoyeds`pomeranians`akitas`vizslas`goldfish`trees`cars`perfumes!({x=3};{x>7};{x=2};{x<3};{x=0};{x=0};{x<5};{x>3};{x=2};{x=1});
+                   first value first as where {all (y key x) @' value x}[;d] each 1_'as:{(`$x[0 2 4 6])!"J"$x[1 3 5 7]} each " " vs' {ssr[;",";""]ssr[x;":";""]} each x};
 
 
 // calculate and profile
