@@ -90,6 +90,13 @@
                    max {sum y {x, reverse each x} x,'1 rotate x}[;nd] each `Sui,/:sl};
 .aoc.201514part1: {max {(x*y*2503 div (y+z))+$[y<=m:2503 mod (y+z);x*y;x*m]} .' n @' where each not null n:"J"$" " vs' x};
 .aoc.201514part2: {max sum each m =\: max m:({[x;y;z;t](x*y*t div (y+z))+$[y<=m:t mod (y+z);x*y;x*m]} .' n @' where each not null n:"J"$" " vs' x) @/:\: 1+til 2503};
+.aoc.201515part1: {f:"J"$-1_''(" " vs' x)[;2 4 6 8];
+                   c:{x,100 - sum x} each raze/[2;] {$[3h=count x;x;.z.s each x ,/: til 101 - sum x]} each til 101;
+                   max {prd @[s;where 0>s:sum x * y;:;0]}[f;] each c};
+.aoc.201515part2: {f:"J"$-1_''(" " vs' x)[;2 4 6 8];
+                   e:"J"$(" " vs' x)[;10];
+                   c:c where 500=sum each e */: c:{x,100 - sum x} each raze/[2;] {$[3h=count x;x;.z.s each x ,/: til 101 - sum x]} each til 101;
+                   max {prd @[s;where 0>s:sum x * y;:;0]}[f;] each c};
 
 
 // calculate and profile
