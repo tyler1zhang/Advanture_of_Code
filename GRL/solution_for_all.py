@@ -1222,11 +1222,53 @@ def boss_turn(state, spells, min_spend):
     state['player']['points']-=(10- state['player']['armor'])
     if state['player']['points']<=0: # player lose
         return
-    player_turn(state, spells, min_spend)                    
+    player_turn(state, spells, min_spend)  
+    
+####===>  Day 23 Solution <===####  
+def q23_2015(a=0):
+    input=get_input('23', '2015').replace(',', '').splitlines()
+    b, pointer=0, 0  
+    
+    ## just translate the instruction and run until out of bound
+    ## alternatively, could use exec() function which is faster for parse string to code
+    ## e.g. exec('b+=1') >> b=1
+    while True:
+        ins= input[pointer].split()
+        if ins[0] == 'hlf':
+            if ins[1]=='a': a=int(a/2)
+            else: b=int(b/2)
+            pointer+=1
+            
+        elif ins[0] == 'tpl':
+            if ins[1]=='a': a=3*a
+            else: b=3*b
+            pointer+=1
+        
+        elif ins[0] == 'inc':
+            if ins[1]=='a': a+=1
+            else: b+=1
+            pointer+=1
+            
+        elif ins[0] == 'jmp':
+            pointer+=int(ins[1])
+            
+        elif ins[0] == 'jie':
+            if ins[1]=='a' and a%2==0: pointer+=int(ins[2])
+            elif ins[1]=='b' and b%2==0: pointer+=int(ins[2])
+            else: pointer+=1
+            
+        elif ins[0] == 'jio':
+            if ins[1]=='a' and a==1: pointer+=int(ins[2])
+            elif ins[1]=='b' and b==1: pointer+=int(ins[2])
+            else: pointer+=1
+        if pointer>=len(input) or pointer<0:
+            break
+    
+    return b                       
            
 ###########  Execution  #############
 start_time=time.time()+1.2  #realized get_input() costs roughly 1.2s which should not be counted for execution
-result=q22_2015()
+result=q23_2015(a=1)
 end_time=time.time()
 print('result:',result ,'|| execution time: %s s'%"{:.2f}".format(end_time-start_time))
 
