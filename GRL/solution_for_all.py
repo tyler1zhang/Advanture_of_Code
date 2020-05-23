@@ -1060,23 +1060,173 @@ def presents_number(n):    #to get total presents of nth house
 def q20_2015_part2():
     input=int(get_input('20', '2015')) #29000000
     ##house n get at lease 11*n presents hence upper bound is input/11. can narrow down further by trying 2^n
-    max=int(input/11)  
+    ## as exist 50 delivery constraint, answer for part2 must be bigger than part1
+    ## so part1_answer can be used as lower bound. also part1_answer/50 is lower bound for elf
+    part1_answer=665280 
+    max=int(input/11) 
     presents=[0]*max
-    for elf in range(1, max):  #iteration from 1st elf to max
+    for elf in range(int(part1_answer/50), max):  #iteration from 1st elf to max
         count=0
         for house in range(elf, max, elf): #nth elf delivers to house n, 2n, 3n.. present 11n until count to 50
             count+=1
             presents[house]+=elf*11
             if count==50:break
     
-    for house in range(1, max): #search the answer
+    for house in range(665280, max): #search the answer
         if presents[house]>=input: return house
         
  ## part1 use less memory but more time. vice versa for part2 ##   
-       
+ 
+ ####===>  Day 21 Solution <===####  
+def q21_2015(): # shared by part 1 and 2
+    
+    boss={'points': 109, 'damage': 8,'armor': 2,} # boss property
+    player={'points':100, 'damage': 0,'armor': 0,} # player property
+    weapons={4:8, 5:10, 6:25, 7:40, 8:74,}  # weapons dict in damage:cost form
+    armors={0:0, 1:13, 2:31, 3:53, 4:75, 5:102,} # armors dict in armor:cost form
+    damage_rings={0:0, 1:25, 2:50, 3:100,} #damage ring in damage:cost form
+    damage_2rings={ 3:75, 4:125, 5:150,} #case for player choose 2 damage ring
+    defense_rings={0:0, 1:20, 2:40, 3:80,} #defense ring in armor:cost form
+    defense_2rings={3:60, 4:100, 5:120,} #case for player choose 2 defense ring
+    least_gold, max_gold=100000, 0
+    ##just try all combinations
+    for w, wd in weapons.items():
+        for a, ad in armors.items():
+            for dm_r, dm in damage_rings.items(): # case of 0 or 1 ring
+                for df_r, df in defense_rings.items():
+                    player['damage']=w+dm_r
+                    player['armor']=a+df_r
+                    gold_spend=wd+ad+dm+df
+                    if is_win(player, boss):
+                        least_gold=min(gold_spend, least_gold)
+                    else: max_gold=max(gold_spend, max_gold)
+            for dm_2r, dm2 in damage_2rings.items(): #case of 2 damage ring
+                player['damage']=w+dm_2r
+                player['armor']=a
+                gold_spend=wd+ad+dm2
+                if is_win(player, boss):
+                    least_gold=min(gold_spend, least_gold)
+                else: max_gold=max(gold_spend, max_gold)
+            for df_2r, df2 in defense_2rings.items():  #case of 2 defense ring
+                player['damage']=w
+                player['armor']=a+df2
+                gold_spend=wd+ad+dm2
+                if is_win(player, boss):                    
+                    least_gold=min(gold_spend, least_gold)
+                else: max_gold=max(gold_spend, max_gold)   
+    return least_gold, max_gold
+
+def is_win(player, boss): #check if play wins
+    boss_down=ceil(boss['points']/max(1, (player['damage']-boss['armor'])))
+    player_down=ceil(player['points']/max(1,(boss['damage']-player['armor'])))
+    return True if player_down>=boss_down else False
+
+ ####===>  Day 22 Solution <===####  
+def q22_2015():  #shared by part1 and 2, just comment/uncomment first line player_turn() for part 1 or 2 solution
+    ##construct data structure, spells: static data, state: real time data
+    spells={   'm_m':  {'cost':53,  'damage':4, },
+              'drain': {'cost':73,  'damage':2, 'heal': 2}, 
+            'shield':  {'cost':113, 'turn':6,   'armor':7},
+            'poison':  {'cost':173, 'turn':6,   'damage':3},
+            'recharge':{'cost':229, 'turn':5,   'mana': 101}}           
+    state={'player': {'points':50, 'mana': 500, 'armor':0}, 
+           'boss': {'points': 71 }, 
+           'effect': {'shield':0, 'poison':0, 'recharge':0, },
+           'spend':0}    
+    min_spend=[100000] # any big number for initial mana, use object not value for function pass  
+    ##recursively take turns between player and boss until one party lose
+    player_turn(state, spells, min_spend)
+    return min_spend[0]
+def player_turn(state, spells, min_spend):
+    state['player']['points']-=1  #!!!uncomment this line for part 2
+    ## update state with remaining effect: shield, poison, recharge
+    if state['effect']['shield']: #update shield if exist
+        state['effect']['shield']=state['effect']['shield']-1
+        if not state['effect']['shield']: 
+            state['player']['armor']=0
+    if state['effect']['poison']: #update poison if exist
+        state['boss']['points']-=spells['poison']['damage']
+        if state['boss']['points']<=0: 
+            min_spend[0]=min(min_spend[0], state['spend'])
+            # print('boss down', min_spend[0])
+            return
+        state['effect']['poison']-=1
+    if state['effect']['recharge']: #update recharge if exist
+        state['player']['mana']+=spells['recharge']['mana']
+        state['effect']['recharge']-=1
+    ## starting of player cast ##
+    ## case: cast Magic Missile ##
+    if state['player']['mana']>=spells['m_m']['cost']:
+        state_mm=copy.deepcopy(state)
+        state_mm['player']['mana']-=spells['m_m']['cost']
+        state_mm['boss']['points']-=spells['m_m']['damage']
+        state_mm['spend']+=spells['m_m']['cost']
+        if state_mm['boss']['points']<=0: 
+            min_spend[0]=min(min_spend[0], state_mm['spend'])
+            # print('boss down', min_spend[0])
+            return
+        boss_turn(state_mm, spells, min_spend)
+    #if not enough mana
+    elif state['effect']['recharge']: boss_turn(state, spells, min_spend)
+    else: return 
+    ## case: cast drain ##
+    if state['player']['mana']>=spells['drain']['cost']:
+        state_drain=copy.deepcopy(state)
+        state_drain['player']['mana']-=spells['drain']['cost']
+        state_drain['player']['points']+=spells['drain']['heal']
+        state_drain['boss']['points']-=spells['drain']['damage']
+        state_drain['spend']+=spells['drain']['cost']
+        if state_drain['boss']['points']<=0: 
+            min_spend[0]=min(min_spend[0], state_drain['spend'])
+            # print('boss down', min_spend[0])
+            return
+        boss_turn(state_drain, spells, min_spend) 
+    ## case: cast shield ##      
+    if not state['effect']['shield'] and state['player']['mana']>=spells['shield']['cost']:
+        state_shield=copy.deepcopy(state)
+        state_shield['player']['mana']-=spells['shield']['cost']
+        state_shield['player']['armor']=spells['shield']['armor']
+        state_shield['effect']['shield']=spells['shield']['turn']
+        state_shield['spend']+=spells['shield']['cost']
+        boss_turn(state_shield, spells, min_spend) 
+    ## case: cast poison ##  
+    if not state['effect']['poison'] and state['player']['mana']>=spells['poison']['cost']:
+        state_poison=copy.deepcopy(state)
+        state_poison['player']['mana']-=spells['poison']['cost']
+        state_poison['effect']['poison']=spells['poison']['turn']
+        state_poison['spend']+=spells['poison']['cost']
+        boss_turn(state_poison, spells, min_spend)
+     ## case: cast recharge ## 
+    if not state['effect']['recharge'] and state['player']['mana']>=spells['recharge']['cost']:
+        state_recharge=copy.deepcopy(state)
+        state_recharge['player']['mana']-=spells['recharge']['cost']
+        state_recharge['effect']['recharge']=spells['recharge']['turn']
+        state_recharge['spend']+=spells['recharge']['cost']
+        boss_turn(state_recharge, spells, min_spend) 
+def boss_turn(state, spells, min_spend):
+    ## update state with remaining effect: shield, poison, recharge
+    if state['effect']['shield']: #update shield if exist
+        state['effect']['shield']=state['effect']['shield']-1
+        if not state['effect']['shield']: 
+            state['player']['armor']=0
+    if state['effect']['poison']: #update poison if exist
+        state['boss']['points']-=spells['poison']['damage']
+        if state['boss']['points']<=0: 
+            min_spend[0]=min(min_spend[0], state['spend'])
+            return
+        state['effect']['poison']-=1
+    if state['effect']['recharge']: #update recharge if exist
+        state['player']['mana']+=spells['recharge']['mana']
+        state['effect']['recharge']-=1
+    
+    state['player']['points']-=(10- state['player']['armor'])
+    if state['player']['points']<=0: # player lose
+        return
+    player_turn(state, spells, min_spend)                    
+           
 ###########  Execution  #############
 start_time=time.time()+1.2  #realized get_input() costs roughly 1.2s which should not be counted for execution
-result=q20_2015_part2()
+result=q22_2015()
 end_time=time.time()
 print('result:',result ,'|| execution time: %s s'%"{:.2f}".format(end_time-start_time))
 
