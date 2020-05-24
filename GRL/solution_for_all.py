@@ -9,6 +9,7 @@ from itertools import permutations, combinations
 import copy
 from functools import reduce
 from math import factorial, ceil
+import numpy
 
 ###########  Global Function  #############
 
@@ -1264,11 +1265,56 @@ def q23_2015(a=0):
         if pointer>=len(input) or pointer<0:
             break
     
-    return b                       
-           
-###########  Execution  #############
+    return b   
+
+####===>  Day 24 Solution <===####      
+def q24_2015(groups=3):
+    input=get_input('24', '2015').splitlines()
+    packs=[]
+    for pack in input:
+        packs.append(int(pack))
+    required=int(sum(packs)/groups)
+    comb=[] #group of packs for one solution
+    result=[[0]*30,] # to store solution with least packs 
+    packs.sort()
+    result = find_fit(packs, required, comb, result) 
+    best_qe=10**15 #any big number
+    for record in result: #find best qe
+        qe=numpy.prod(record)   
+        best_qe=min(best_qe, qe)
+    return best_qe   
+##very similar to q17       
+def find_fit(packs, required, comb, result):
+    if not packs or required<packs[0]:
+        return False #no solution
+    elif required==packs[0]: # solution found and check if it has least packs comparing to existing
+        comb.append(packs[0])
+        if len(comb)<len(result[0]):
+            result.clear()
+            result.append(comb)
+        elif len(comb)==len(result[0]):
+            result.append(comb)
+        return True
+    comb1=comb.copy()
+    comb1.append(packs[0]) 
+    find_fit(packs[1:],required, comb, result) # with first pack not involved
+    find_fit(packs[1:],required-packs[0], comb1, result) # with first pack involved                   
+    return result 
+
+####===>  Day 25 Solution <===####
+##codes paper是一个斜放的三角形，(row, column) 对应的数字应该为 (n-1)*(n-2)/2+column where n=row+column, 等差数列求和
+def q25_2015_part1():
+    required =(3010, 3019) #my input
+    index= (sum(required)-1)*(sum(required)-2)//2+required[1]
+    a=20151125 #inital number
+    
+    for i in range(1, index):
+        a=(a*252533)%33554393   
+    return a    
+     
+###########  Execution  ############# 417649
 start_time=time.time()+1.2  #realized get_input() costs roughly 1.2s which should not be counted for execution
-result=q23_2015(a=1)
+result=q25_2015_part1()
 end_time=time.time()
 print('result:',result ,'|| execution time: %s s'%"{:.2f}".format(end_time-start_time))
 
