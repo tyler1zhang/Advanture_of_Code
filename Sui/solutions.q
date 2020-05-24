@@ -7,6 +7,7 @@
 .aoc.SELF:{x};
 .aoc.perm:{{raze x{x,/:y except x}\:y}[;y]/[x-1;y]};
 .aoc.lookAndSay:{[n] c:1+(n=flip 1_next\[2;n])?\:0b; raze flip (c;n) @\: m:where not 1<prev c};
+.aoc.comb:{{raze x{x,/:y where y>max x}\:y}[;y]/[x-1;y]};
 
 
 // solutions
@@ -101,6 +102,10 @@
                    first value first as where {all (value x)=y key x}[;d] each 1_'as:{(`$x[0 2 4 6])!"J"$x[1 3 5 7]} each " " vs' {ssr[;",";""]ssr[x;":";""]} each x};
 .aoc.201516part2: {d:`children`cats`samoyeds`pomeranians`akitas`vizslas`goldfish`trees`cars`perfumes!({x=3};{x>7};{x=2};{x<3};{x=0};{x=0};{x<5};{x>3};{x=2};{x=1});
                    first value first as where {all (y key x) @' value x}[;d] each 1_'as:{(`$x[0 2 4 6])!"J"$x[1 3 5 7]} each " " vs' {ssr[;",";""]ssr[x;":";""]} each x};
+.aoc.201517part1: {l:desc "J"$x; .aoc.counter17:0;
+                   {[n;i;l].aoc.counter17+:sum 150=n+l[where i<til count l];if[sum b:150>m:n+l[j:where i<til count l];.z.s[;;l] .' flip(m;j) @\: where b]}[;;l] .' l,'til count l;
+                   .aoc.counter17};
+.aoc.201517part2: {l:desc "J"$x; m:{while[150>sum x#y;x+:1];x}[1;l]; sum 150=sum each l .aoc.comb[m;til count l]};
 
 
 // calculate and profile
