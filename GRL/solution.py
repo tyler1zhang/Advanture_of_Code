@@ -16,9 +16,9 @@ import numpy
 #To retrieve question input with param: year and question number
 #To invoke this function, login onto Github with chrome is a must 
 def get_input(question_num, year='2015'):
-    input_url='https://adventofcode.com/'+year+'/day/'+question_num+'/input'
-    cookies = chrome_cookies(input_url)    
-    content = requests.get(input_url, cookies=cookies).text
+    f = open("input/q%s_2015.txt"%question_num, "r")
+    content=f.read()
+    f.close()
     return content
 
 ###########  Starting of Solution  #############
@@ -161,6 +161,12 @@ def q3_2015_part2():
     return len(coordinate_set)   
 
 ####===>  Day 4 Solution <===####
+def q4_2015_part1():
+    return q4_2015(part_num=1)
+    
+def q4_2015_part2():
+    return q4_2015(part_num=2)
+    
 def q4_2015(part_num=1):  #shared by part 1 and part 2
     '''
     part1:
@@ -254,7 +260,7 @@ def q5_2015_part2():
         # to check if requirement 1 and 2 fulfilled 
         if pair_appear_twice and appear_inbetween:
             nice_str_count+=1
-            print(str_to_check)
+            #print(str_to_check)
             
     return nice_str_count    
 
@@ -387,12 +393,12 @@ def q7_2015_part1():
 #recursively find up-stream of circuit. but will run into infinite loop for some cases
 #e.g  b AND c ->a,  e AND f ->b, b AND g ->e, 123 ->g, 45 ->e, 67 ->f
 def get_signal(circuit_dict, destination):
-    print('get_signal for ', destination)
+    #print('get_signal for ', destination)
     if destination.isnumeric(): # case: 123 
         return int(destination)
     
     instruction=circuit_dict[destination].split()
-    print(circuit_dict[destination],'-->', destination)
+    #print(circuit_dict[destination],'-->', destination)
     if len(instruction)==1: # case: 123 -> x
         return get_signal(circuit_dict, instruction[0])
     elif instruction[0]=='NOT':  #case: NOT abc -> h
@@ -536,11 +542,17 @@ def generate_input(n=7):
     return input
 
 ####===>  Day 10 Solution <===####
+def q10_2015_part1():
+    return q10_2015(repeat_count=40)
+
+def q10_2015_part2():
+    return q10_2015(repeat_count=50)
+
 def q10_2015(repeat_count): 
     input='1113122113'
     re_digit = re.compile(r'((\d)\2*)') #find repeated digit
     for i in range(repeat_count):
-        print('loop', i)
+        #print('loop', i)
         input = re_digit.sub(replace,input)
     return len(input)
 ## replace repeated digits to its 'say' form, e.g 11 -> two 1 -> 21
@@ -772,7 +784,7 @@ def q15_2015_part1():
     
     return max_score
 
-def q15_2015_part2():
+def q15_2015_part2_old():
     input=get_input('15', '2015').splitlines()
     total_unit=100
     ingre_stats=[]
@@ -806,7 +818,7 @@ def q15_2015_part2():
     return max_score 
       
 ##alternative improved solution for q15 part2 
-def q15_2015_part2_2():
+def q15_2015_part2():
     input=get_input('15', '2015').splitlines()
     total_unit=100
     ingre_stats=[]
@@ -906,6 +918,12 @@ def q17_2015_part2():
             return counter      
 
 ####===>  Day 18 Solution <===####
+def q18_2015_part1():
+    return q18_2015(total_steps=100, part=1)
+
+def q18_2015_part2():
+    return q18_2015(total_steps=100, part=2)
+    
 def q18_2015(total_steps=100, part=1): #shared by part1 and part2
     '''
         A light which is on stays on when 2 or 3 neighbors are on, and turns off otherwise.
@@ -1033,7 +1051,7 @@ def find_pattern(rep):
                 k=k.replace(v, '*')
         if k != len(k) * '*': 
             s.add(k)
-    print(s)                     
+    #print(s)                     
 
 ####===>  Day 20 Solution <===####  
 def q20_2015_part1():
@@ -1078,7 +1096,13 @@ def q20_2015_part2():
         
  ## part1 use less memory but more time. vice versa for part2 ##   
  
- ####===>  Day 21 Solution <===####  
+ ####===>  Day 21 Solution <===#### 
+def q21_2015_part1():
+    return q21_2015()[0]
+
+def q21_2015_part2():
+    return q21_2015()[1]
+
 def q21_2015(): # shared by part 1 and 2
     
     boss={'points': 109, 'damage': 8,'armor': 2,} # boss property
@@ -1122,8 +1146,14 @@ def is_win(player, boss): #check if play wins
     player_down=ceil(player['points']/max(1,(boss['damage']-player['armor'])))
     return True if player_down>=boss_down else False
 
- ####===>  Day 22 Solution <===####  
-def q22_2015():  #shared by part1 and 2, just comment/uncomment first line player_turn() for part 1 or 2 solution
+ ####===>  Day 22 Solution <===####
+def q22_2015_part1():
+    return q22_2015(part=1)
+
+def q22_2015_part2():
+    return q22_2015(part=2)
+ 
+def q22_2015(part=1):  #shared by part1 and 2, just comment/uncomment first line player_turn() for part 1 or 2 solution
     ##construct data structure, spells: static data, state: real time data
     spells={   'm_m':  {'cost':53,  'damage':4, },
               'drain': {'cost':73,  'damage':2, 'heal': 2}, 
@@ -1136,10 +1166,10 @@ def q22_2015():  #shared by part1 and 2, just comment/uncomment first line playe
            'spend':0}    
     min_spend=[100000] # any big number for initial mana, use object not value for function pass  
     ##recursively take turns between player and boss until one party lose
-    player_turn(state, spells, min_spend)
+    player_turn(state, spells, min_spend, part)
     return min_spend[0]
-def player_turn(state, spells, min_spend):
-    state['player']['points']-=1  #!!!uncomment this line for part 2
+def player_turn(state, spells, min_spend, part):
+    if part==2: state['player']['points']-=1  #!!!uncomment this line for part 2
     ## update state with remaining effect: shield, poison, recharge
     if state['effect']['shield']: #update shield if exist
         state['effect']['shield']=state['effect']['shield']-1
@@ -1166,9 +1196,9 @@ def player_turn(state, spells, min_spend):
             min_spend[0]=min(min_spend[0], state_mm['spend'])
             # print('boss down', min_spend[0])
             return
-        boss_turn(state_mm, spells, min_spend)
+        boss_turn(state_mm, spells, min_spend, part)
     #if not enough mana
-    elif state['effect']['recharge']: boss_turn(state, spells, min_spend)
+    elif state['effect']['recharge']: boss_turn(state, spells, min_spend, part)
     else: return 
     ## case: cast drain ##
     if state['player']['mana']>=spells['drain']['cost']:
@@ -1181,7 +1211,7 @@ def player_turn(state, spells, min_spend):
             min_spend[0]=min(min_spend[0], state_drain['spend'])
             # print('boss down', min_spend[0])
             return
-        boss_turn(state_drain, spells, min_spend) 
+        boss_turn(state_drain, spells, min_spend, part) 
     ## case: cast shield ##      
     if not state['effect']['shield'] and state['player']['mana']>=spells['shield']['cost']:
         state_shield=copy.deepcopy(state)
@@ -1189,22 +1219,22 @@ def player_turn(state, spells, min_spend):
         state_shield['player']['armor']=spells['shield']['armor']
         state_shield['effect']['shield']=spells['shield']['turn']
         state_shield['spend']+=spells['shield']['cost']
-        boss_turn(state_shield, spells, min_spend) 
+        boss_turn(state_shield, spells, min_spend, part) 
     ## case: cast poison ##  
     if not state['effect']['poison'] and state['player']['mana']>=spells['poison']['cost']:
         state_poison=copy.deepcopy(state)
         state_poison['player']['mana']-=spells['poison']['cost']
         state_poison['effect']['poison']=spells['poison']['turn']
         state_poison['spend']+=spells['poison']['cost']
-        boss_turn(state_poison, spells, min_spend)
+        boss_turn(state_poison, spells, min_spend, part)
      ## case: cast recharge ## 
     if not state['effect']['recharge'] and state['player']['mana']>=spells['recharge']['cost']:
         state_recharge=copy.deepcopy(state)
         state_recharge['player']['mana']-=spells['recharge']['cost']
         state_recharge['effect']['recharge']=spells['recharge']['turn']
         state_recharge['spend']+=spells['recharge']['cost']
-        boss_turn(state_recharge, spells, min_spend) 
-def boss_turn(state, spells, min_spend):
+        boss_turn(state_recharge, spells, min_spend, part) 
+def boss_turn(state, spells, min_spend, part):
     ## update state with remaining effect: shield, poison, recharge
     if state['effect']['shield']: #update shield if exist
         state['effect']['shield']=state['effect']['shield']-1
@@ -1223,9 +1253,15 @@ def boss_turn(state, spells, min_spend):
     state['player']['points']-=(10- state['player']['armor'])
     if state['player']['points']<=0: # player lose
         return
-    player_turn(state, spells, min_spend)  
+    player_turn(state, spells, min_spend, part)  
     
-####===>  Day 23 Solution <===####  
+####===>  Day 23 Solution <===####
+def q23_2015_part1():
+    return q23_2015(a=0)
+
+def q23_2015_part2():
+    return q23_2015(a=1)
+  
 def q23_2015(a=0):
     input=get_input('23', '2015').replace(',', '').splitlines()
     b, pointer=0, 0  
@@ -1267,7 +1303,13 @@ def q23_2015(a=0):
     
     return b   
 
-####===>  Day 24 Solution <===####      
+####===>  Day 24 Solution <===#### 
+def q24_2015_part1():
+    return q24_2015(groups=3) 
+
+def q24_2015_part2():
+    return q24_2015(groups=4) 
+ 
 def q24_2015(groups=3):
     input=get_input('24', '2015').splitlines()
     packs=[]
@@ -1310,11 +1352,15 @@ def q25_2015_part1():
     
     for i in range(1, index):
         a=(a*252533)%33554393   
-    return a    
+    return a 
+
+def q25_2015_part2():
+    return 'All done for 25 days'
+
      
-###########  Execution  ############# 417649
-start_time=time.time()+1.2  #realized get_input() costs roughly 1.2s which should not be counted for execution
-result=q25_2015_part1()
-end_time=time.time()
-print('result:',result ,'|| execution time: %s s'%"{:.2f}".format(end_time-start_time))
+###########  Execution  ############# 
+# start_time=time.time()+1.2  #realized get_input() costs roughly 1.2s which should not be counted for execution
+# result=q25_2015_part1()
+# end_time=time.time()
+# print('result:',result ,'|| execution time: %s s'%"{:.2f}".format(end_time-start_time))
 
