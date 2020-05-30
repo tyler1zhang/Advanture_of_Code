@@ -8,6 +8,7 @@
 .aoc.perm:{{raze x{x,/:y except x}\:y}[;y]/[x-1;y]};
 .aoc.lookAndSay:{[n] c:1+(n=flip 1_next\[2;n])?\:0b; raze flip (c;n) @\: m:where not 1<prev c};
 .aoc.comb:{{raze x{x,/:y where y>max x}\:y}[;y]/[x-1;y]};
+.aoc.divisors:{distinct l,x div l:t where 0=x mod t:1+til floor sqrt x};
 
 
 // solutions
@@ -115,6 +116,8 @@
                              if[not m[i;j];if[(sum {z[x;y]}[;;m] .' except[(cross/)o+\:(-1 0 1);enlist o:(i;j)]) = 3;.aoc.n[i;j]:1b]];}
                     [x;;] .' ({x cross x} til count x) except (0 0;0 99;99 0;99 99);.aoc.n}/[100;m]; sum sum each .aoc.n};
 .aoc.201519part1: {count distinct raze {{[i;j;r;s] (i#s),r,j _ s}[;;x[1];y] .' p ,' (p:ss[y;x[0]])+count x[0]}[;last x] each (" " vs' -2_x)[;0 2]};
+.aoc.201520part1: {i:1; while[("J"$raze x) > sum 10*.aoc.divisors i;i+:1]; i};
+.aoc.201520part2: {i:1; while[("J"$raze x) > sum 11*d where i<=50*(d:.aoc.divisors i);i+:1]; i};
 .aoc.201521part1: {`bp`bd`ba set' "J"$last each " " vs' x; pp:100;
                    weapons:([]name:`dagger`shortsword`warhammer`longsword`greataxe;cost:8 10 25 40 74;damage:4 5 6 7 8;armor:0 0 0 0 0);
                    armor:([]name:`leather`chainmail`splintmail`bandedmail`platemail;cost:13 31 53 75 102;damage:0 0 0 0 0;armor:1 2 3 4 5);
