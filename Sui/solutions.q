@@ -116,6 +116,8 @@
                              if[not m[i;j];if[(sum {z[x;y]}[;;m] .' except[(cross/)o+\:(-1 0 1);enlist o:(i;j)]) = 3;.aoc.n[i;j]:1b]];}
                     [x;;] .' ({x cross x} til count x) except (0 0;0 99;99 0;99 99);.aoc.n}/[100;m]; sum sum each .aoc.n};
 .aoc.201519part1: {count distinct raze {{[i;j;r;s] (i#s),r,j _ s}[;;x[1];y] .' p ,' (p:ss[y;x[0]])+count x[0]}[;last x] each (" " vs' -2_x)[;0 2]};
+.aoc.201519part2: {s:ssr[;"Y";","]ssr[;"Ar";")"]ssr[;"Rn";"("]last x;
+                   (sum count each ss[s;] each ("Al";"B";"Ca";"F";"H";"Mg";"N";"O";"P";"Si";"Th";"Ti")) - (sum s = ",") + 1};
 .aoc.201520part1: {i:1; while[("J"$raze x) > sum 10*.aoc.divisors i;i+:1]; i};
 .aoc.201520part2: {i:1; while[("J"$raze x) > sum 11*d where i<=50*(d:.aoc.divisors i);i+:1]; i};
 .aoc.201521part1: {`bp`bd`ba set' "J"$last each " " vs' x; pp:100;
