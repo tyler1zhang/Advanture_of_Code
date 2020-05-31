@@ -136,6 +136,24 @@
                    lf:{[bp;bd;ba;pp;pd;pa] (>/) ceiling each (bp % max(pd - ba;1); pp % max(bd - pa;1))}[bp;bd;ba;pp;;];
                    les:es where lf .' value each {exec sum damage, sum armor from y where name in x}[;raze (weapons;armor;rings)] each es;
                    max {exec sum cost from y where name in x}[;raze (weapons;armor;rings)] each les};
+.aoc.201523part1: {`hlf set {[i;x] x set (value x)%2;i+1};
+                   `tpl set {[i;x] x set 3*value x;i+1};
+                   `inc set {[i;x] x set 1+value x;i+1};
+                   `jmp set {[i;y] i+y};
+                   `jie set {[i;x;y] $[0=(value x) mod 2;i+y;i+1]};
+                   `jio set {[i;x;y] $[1=value x;i+y;i+1]};
+                   l:{$[3=count v:" " vs x;(`$v[0];`$-1_v[1];"J"$v[2]);x like "jmp*";(`$v[0];"J"$v[1]);`$v]} each x;
+                   i:0; `a set 0; `b set 0;
+                   while[i<count l; i:(value first l[i])[i] . 1_l[i]]; b};
+.aoc.201523part2: {`hlf set {[i;x] x set (value x)%2;i+1};
+                   `tpl set {[i;x] x set 3*value x;i+1};
+                   `inc set {[i;x] x set 1+value x;i+1};
+                   `jmp set {[i;y] i+y};
+                   `jie set {[i;x;y] $[0=(value x) mod 2;i+y;i+1]};
+                   `jio set {[i;x;y] $[1=value x;i+y;i+1]};
+                   l:{$[3=count v:" " vs x;(`$v[0];`$-1_v[1];"J"$v[2]);x like "jmp*";(`$v[0];"J"$v[1]);`$v]} each x;
+                   i:0; `a set 1; `b set 0;
+                   while[i<count l; i:(value first l[i])[i] . 1_l[i]]; b};
 
 
 // calculate and profile
