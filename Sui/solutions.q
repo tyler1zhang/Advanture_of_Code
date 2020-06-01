@@ -154,6 +154,12 @@
                    l:{$[3=count v:" " vs x;(`$v[0];`$-1_v[1];"J"$v[2]);x like "jmp*";(`$v[0];"J"$v[1]);`$v]} each x;
                    i:0; `a set 1; `b set 0;
                    while[i<count l; i:(value first l[i])[i] . 1_l[i]]; b};
+.aoc.201524part1: {l:"J"$x; v:(sum l) % 3;
+                   i:1; while[v>sum neg[i]#l;i+:1]; while[0=sum v=sum each .aoc.comb[i;l];i+:1];
+                   min prd each c where v=sum each c:.aoc.comb[i;l]};
+.aoc.201524part2: {l:"J"$x; v:(sum l) % 4;
+                   i:1; while[v>sum neg[i]#l;i+:1]; while[0=sum v=sum each .aoc.comb[i;l];i+:1];
+                   min prd each c where v=sum each c:.aoc.comb[i;l]};
 
 
 // calculate and profile
