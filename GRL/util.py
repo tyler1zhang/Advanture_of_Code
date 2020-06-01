@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 import requests
 from pycookiecheat import chrome_cookies #pip3 install pycookiecheat
-from solution import *
+from solution_2015 import *
 
 
-def get_input(question_num, year='2015'):
+def get_input(question_num, year='2016'):
     '''
     To retrieve question input with param: year and question number
     To invoke this function, login onto Github with chrome is a must  
@@ -19,7 +19,7 @@ def save_input_local():
     save all input to loca path input/q%d_2015.txt
     '''
     for i in range(1, 26):
-        f = open("input/q%d_2015.txt"%i, "w")
+        f = open("input/q%d_2016.txt"%i, "w")
         f.write(get_input(str(i)))
         f.close()
 
@@ -49,7 +49,7 @@ def save_exe_time():
 #save_input_local()
 
 #### 2.execute all solutions and save execution time to execution_time.txt
-save_exe_time()
+#save_exe_time()
 
 
 

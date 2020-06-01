@@ -39,7 +39,11 @@ Practice code
 
 ## RL's answers of [2015](https://adventofcode.com/2015)
 
-* Answer for all questions here(updated up to #25) [Answers](GRL/solution_for_all.py)
+* Answer for all questions(updated up to #25) [Answers](GRL/solution_2015.py)
+
+## RL's answers of [2016](https://adventofcode.com/2016)
+
+* Answer for all questions(updated up to #10) [Answers](GRL/solution_2016.py)
 
 
 ## Sui's answers of [2015](https://adventofcode.com/2015)
