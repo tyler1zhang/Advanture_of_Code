@@ -160,6 +160,9 @@
 .aoc.201524part2: {l:"J"$x; v:(sum l) % 4;
                    i:1; while[v>sum neg[i]#l;i+:1]; while[0=sum v=sum each .aoc.comb[i;l];i+:1];
                    min prd each c where v=sum each c:.aoc.comb[i;l]};
+.aoc.201525part1: {c:n where not null n:"J"$-1 _' " " vs raze x;
+                   row:c[0]; column:c[1];
+                   {(x * 252533) mod 33554393}/[-1 + (0 +/ 1+til column) +/ column + til (row - 1);20151125]};
 
 
 // calculate and profile
