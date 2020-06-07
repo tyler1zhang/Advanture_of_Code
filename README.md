@@ -43,7 +43,7 @@ Practice code
 
 ## RL's answers of [2016](https://adventofcode.com/2016)
 
-* Answer for all questions(updated up to #10) [Answers](GRL/solution_2016.py)
+* Answer for all questions(updated up to #22) [Answers](GRL/solution_2016.py)
 
 
 ## Sui's answers of [2015](https://adventofcode.com/2015)
