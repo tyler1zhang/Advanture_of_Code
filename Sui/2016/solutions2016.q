@@ -13,6 +13,11 @@
                    .aoc.p:enlist 0 0; i:0;
                    while[(count .aoc.p)=count distinct .aoc.p;.aoc.p,:f[c[i];c[i+1]] except enlist c[i];i+:1];
                    sum abs last where 1<count each group .aoc.p};
+.aoc.201602part1: {.aoc.f2:{$[y="U";$[x>3;x-3;x];y="D";$[x<7;x+3;x];y="L";$[1=x mod 3;x;x-1];$[0=x mod 3;x;x+1]]};
+                   "J"$"" sv string 5 {x .aoc.f2/ y}\ x};
+.aoc.201602part2: {.aoc.f2:{$[y="U";$[x in 1 2 4 5 9;x;x in 3 13;x-2;x-4];y="D";$[x in 5 9 10 12 13;x;x in 1 11;x+2;x+4];
+                              y="L";$[x in 1 2 5 10 13;x;x-1];$[x in 1 4 9 12 13;x;x+1]]};
+                   upper last each string `byte$5 {x .aoc.f2/ y}\ x};
 
 
 // calculate and profile
