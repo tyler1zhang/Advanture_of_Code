@@ -18,6 +18,8 @@
 .aoc.201602part2: {.aoc.f2:{$[y="U";$[x in 1 2 4 5 9;x;x in 3 13;x-2;x-4];y="D";$[x in 5 9 10 12 13;x;x in 1 11;x+2;x+4];
                               y="L";$[x in 1 2 5 10 13;x;x-1];$[x in 1 4 9 12 13;x;x+1]]};
                    upper last each string `byte$5 {x .aoc.f2/ y}\ x};
+.aoc.201603part1: {sum 0>(-/') desc each {l where not null l:"J"$" " vs x} each x};
+.aoc.201603part2: {sum 0>(-/') desc each raze flip each 3 cut {l where not null l:"J"$" " vs x} each x};
 
 
 // calculate and profile
