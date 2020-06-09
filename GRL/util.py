@@ -2,6 +2,7 @@
 import requests
 from pycookiecheat import chrome_cookies #pip3 install pycookiecheat
 from solution_2015 import *
+from solution_2016 import *
 
 
 def get_input(question_num, year='2016'):
@@ -30,13 +31,14 @@ def save_exe_time():
     exe_time=[]
     for i in range(1, 26):
         start_time=time.time()  
-        exec('q%d_2015_part1()'%i)
+        exec('q%d_2016_part1()'%i)
         end_time1=time.time()
-        exec('q%d_2015_part2()'%i)
+        exec('q%d_2016_part2()'%i)
         end_time2=time.time()
         exe_time.append((end_time1-start_time, end_time2-end_time1))
+        print("{:02}  {:5.2f}  {:5.2f}".format(i, exe_time[-1][0], exe_time[-1][1]))
     
-    f = open("execution_time.txt", "w")
+    f = open("exe_time_2016.txt", "w")
     f.write ("Day Part1  Part2\n")
     i=0
     for part1, part2 in exe_time:
@@ -49,7 +51,7 @@ def save_exe_time():
 #save_input_local()
 
 #### 2.execute all solutions and save execution time to execution_time.txt
-#save_exe_time()
+save_exe_time()
 
 
 
