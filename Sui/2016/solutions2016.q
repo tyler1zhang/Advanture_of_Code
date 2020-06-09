@@ -20,6 +20,9 @@
                    upper last each string `byte$5 {x .aoc.f2/ y}\ x};
 .aoc.201603part1: {sum 0>(-/') desc each {l where not null l:"J"$" " vs x} each x};
 .aoc.201603part2: {sum 0>(-/') desc each raze flip each 3 cut {l where not null l:"J"$" " vs x} each x};
+.aoc.201604part1: {sum {"J"$-7_last "-" vs x} each x where {(-1_-6#x)~5#key desc count each group asc "" sv -1 _ "-" vs x} each x};
+.aoc.201604part2: {.aoc.decrypt:{.Q.a ((y mod 26)+.Q.a?x) mod 26};
+                   "J"$-7_last "-" vs first x where (" " sv' {.aoc.decrypt[;"J"$-7_last "-" vs x] each -1 _ "-" vs x} each x) like "*north*"};
 
 
 // calculate and profile
