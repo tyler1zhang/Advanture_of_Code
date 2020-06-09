@@ -300,12 +300,6 @@ def q8_2016_part2():
         else:
             [a, shift]=ins.split('=')[1].split(' by ') 
             rotate_col(int(a), int(shift), screen)
-    for i in range(0, len(screen[0]), 5):
-        
-        for row in screen:
-            print(row[i:i+5])
-        print('================')
-
     
 def rect(y, x, screen):
     for i in range(y):
@@ -528,47 +522,47 @@ def isValidMove(state): # check if the move is valid
 ####===>  Day 12 Solution <===####
 def q12_2016_part1():
     input=get_input('12', '2016').splitlines()
-    instructions=[]
+    instr=[]
     for line in input: ## parse each instruction into function string
         line = line.split()
         line.insert(1, '(')
         line.append( ')')
         line.insert(3, ',')
         line=' '.join(line)
-        instructions.append(line)
+        instr.append(line)
     pointer, a, b, c, d=0, [0], [0], [0], [0]
-    while -1<pointer<len(instructions):
-        pointer+=eval(instructions[pointer])   
+    while -1<pointer<len(instr):
+        pointer+=eval(instr[pointer])   
     return(a[0])    
 
 def q12_2016_part2():
-    register = {'a': 0,'b': 0,'c': 1,'d': 0}
+    reg = {'a': 0,'b': 0,'c': 1,'d': 0}
     input=get_input('12', '2016').splitlines()
-    instructions = []
+    instr = []
     for line in input:
-        instructions.append(line.split(' '))        
+        instr.append(line.split(' '))        
     pointer = 0
     while True:
-        if pointer >= len(instructions):
+        if pointer >= len(instr):
             break
-        ins = instructions[pointer]
+        ins = instr[pointer]
         if ins[0] == 'cpy':
-            register[ins[2]] = get_value(ins[1], register)
+            reg[ins[2]] = get_value(ins[1], reg)
         elif ins[0] == 'inc':
-            register[ins[1]] += 1
+            reg[ins[1]] += 1
         elif ins[0] == 'dec':
-            register[ins[1]] -= 1
+            reg[ins[1]] -= 1
         elif ins[0] == 'jnz':
-            if get_value(ins[1], register) != 0:
-                pointer += get_value(ins[2], register)
+            if get_value(ins[1], reg) != 0:
+                pointer += get_value(ins[2], reg)
                 pointer -= 1    
         pointer += 1   
-    return register['a']
+    return reg['a']
 
-def get_value(s, register):
+def get_value(s, reg):
     try: return int(s)
     except ValueError:
-        return register[s]
+        return reg[s]
 
 ##define all functions of assembunny code
 def cpy(x, y):   
@@ -1043,10 +1037,191 @@ def q22_2016_part2():
         if x_>x_G: step+=5
         else: step+=x_G-3+x_-3 + y_-y_G
         x_, y_, x_G=x_G, y_G, x_G-1
+        
+####===>  Day 23 Solution <===####
+def q23_2016_part1():
+    reg = {'a': 7,'b': 0,'c': 0,'d': 0}
+    input=get_input('23', '2016').splitlines()
+    instr = []
+    for line in input:
+        instr.append(line.split(' '))        
+    pointer, total = 0, len(instr)
+    while True:
+        if pointer >= total or pointer<0:
+            return reg['a']
+        ins = instr[pointer]
+        if ins[0] == 'cpy':
+            reg[ins[2]] = get_value(ins[1], reg)
+        elif ins[0] == 'inc':
+            reg[ins[1]] += 1
+        elif ins[0] == 'dec':
+            reg[ins[1]] -= 1
+        elif ins[0] == 'jnz':
+            if get_value(ins[1], reg) != 0:
+                pointer += get_value(ins[2], reg)-1
+        elif ins[0] == 'tgl':
+            target_i= pointer+reg[ins[1]]
+            if -1<target_i<total:
+                ins = instr[target_i]
+                if len(ins)==2:
+                    ins[0]='dec' if ins[0]=='inc' else 'inc'
+                else:
+                    ins[0]='cpy' if ins[0]=='jnz' else 'jnz'
+        pointer += 1
+
+def q23_2016_part2():
+    '''
+    need find out repeated pattern by printing out the pointer movement
+    '''
+    reg = {'a': 12,'b': 0,'c': 0,'d': 0}
+    input=get_input('23', '2016').splitlines()
+    instr = []
+    for line in input:
+        instr.append(line.split(' '))        
+    pointer, total = 0, len(instr)
+    while True:
+        if pointer >= total or pointer<0:
+            return reg['a']      
+        if pointer==4: #line 4-9 is actually doing a=a+b*d
+            reg['a']+=reg['b']*reg['d']
+            reg['c'], reg['d']=0, 0
+            pointer=10
+            continue
+        if pointer==20: #line 20-25 is actually doing a=a+77*c
+            reg['a']+=77* reg['c']
+            reg['d'], reg['c']=0, 0
+            pointer=26
+            continue
+        ins = instr[pointer]
+        if ins[0] == 'cpy':
+            reg[ins[2]] = get_value(ins[1], reg)
+        elif ins[0] == 'inc':
+            reg[ins[1]] += 1
+        elif ins[0] == 'dec':
+            reg[ins[1]] -= 1
+        elif ins[0] == 'jnz':
+            if get_value(ins[1], reg) != 0:
+                pointer += get_value(ins[2], reg)-1
+        elif ins[0] == 'tgl':
+            target_i= pointer+reg[ins[1]]
+            if -1<target_i<total:
+                ins = instr[target_i]
+                if len(ins)==2:
+                    ins[0]='dec' if ins[0]=='inc' else 'inc'
+                else:
+                    ins[0]='cpy' if ins[0]=='jnz' else 'jnz'
+        pointer += 1
+
+####===>  Day 24 Solution <===####
+def q24_2016_part1():
+    return q24_2016(part2=[False])
+
+def q24_2016_part2():
+    return q24_2016(part2=[True])
+
+def q24_2016(part2):
+    input =get_input('24', '2016').splitlines()
+    maze, target, dist=[], set(), {}
+    for line in input:
+        maze.append(list(line))
+        for match in re.finditer(r'[0-7]+', line):
+            if match.group()=='0': orgin=(match.start(), input.index(line))            
+            target.add((match.start(), input.index(line)))
+    ## find shortest steps starting from a passage to other passage        
+    def find_next_move(last_locs, total_step):
+        found=target & last_locs
+        if found:
+            for psg in found: all_found[psg]= total_step
+            if len(all_found)==len(target): return all_found
+        new_locs=set()
+        for last_loc in last_locs:
+            (x, y)=last_loc
+            if maze[y][x-1]!='#' and (x-1, y) not in visited:
+                new_locs.add((x-1, y))
+            if maze[y][x+1]!='#' and (x+1, y) not in visited:
+                new_locs.add((x+1, y))
+            if maze[y-1][x]!='#' and (x, y-1) not in visited:
+                new_locs.add((x, y-1))
+            if maze[y+1][x]!='#' and (x, y+1) not in visited:
+                new_locs.add((x, y+1))     
+        visited.update(new_locs)
+        total_step+=1 
+        return find_next_move(new_locs, total_step)
+     
+    for pos in target: ## build distance dict for all passage
+        total_step, visited, last_locs, all_found=0, {pos},  {pos}, {}
+        pos_dist=find_next_move(last_locs, total_step)
+        del pos_dist[pos]
+        dist[pos]=pos_dist
+    ## find min steps to visit all target    
+    steps, min_steps, visited=0, [10000], [orgin]
+    def find_min_steps(last_visit, visited, steps):
+        if steps>min_steps[0]: return
+        if len(visited)==len(target): 
+            if part2[0]: steps+=dist[last_visit][orgin]
+            min_steps[0]=min(min_steps[0], steps)
+            return
+        for pos, distance in dist[last_visit].items():
+            if pos not in visited: 
+                new_visited=visited.copy()
+                new_visited.append(pos)
+                step_new=steps+distance
+                find_min_steps(pos, new_visited, step_new)
     
+    find_min_steps(orgin, visited, steps)
+    return min_steps[0]
+
+####===>  Day 25 Solution <===####
+def q25_2016_part1():
+    input=get_input('25', '2016').splitlines()
+    instr = []
+    for line in input:
+        instr.append(line.split(' '))        
+    init_a= 0
+    counter=[0 for i in range(len(instr))] # use this to find pattern of assembunny code
+    
+    while True: ## test a from 0 until success
+        pointer, output=0, []
+        init_a+=1
+        reg = {'a': init_a,'b': 0,'c': 0,'d': 0}
+        ##loop stops once output is not toggling, then test a+1
+        while True: 
+            if pointer==1: #line 1-7 is actually doing d=d+633*4
+                reg['d']+=4*633
+                reg['b'], reg['c']=0, 0
+                pointer=8
+                continue        
+            if pointer==12: #line 12-19 performs b//2 and b%2
+                reg['a']+=reg['b']//2
+                reg['c']=2-reg['b']%2
+                reg['b']= 0
+                pointer=20
+                continue
+            ins = instr[pointer]
+            #counter[pointer]+=1 # use this counter to find the pattern
+            if ins[0] == 'cpy':
+                reg[ins[2]] = get_value(ins[1], reg)
+            elif ins[0] == 'inc':
+                reg[ins[1]] += 1
+            elif ins[0] == 'dec':
+                reg[ins[1]] -= 1
+            elif ins[0] == 'jnz':
+                if get_value(ins[1], reg) != 0:
+                    pointer += get_value(ins[2], reg)-1
+            elif ins[0] == 'out':
+                #failed if new output repeats last output
+                if output and output[-1]==reg[ins[1]]: break
+                if len(output)>100: #assume successful if 100 output follow clock signal pattern
+                    return init_a
+                output.append(reg[ins[1]])
+            pointer += 1          
+
+def q25_2016_part2():
+    return 'All done for 25 days of 2016'
+     
 ###########  Execution  ############# 
-start_time=time.time()
-result=q22_2016_part2()
-end_time=time.time()
-print('result:',result ,'|| execution time: %s s'%"{:.2f}".format(end_time-start_time))
+# start_time=time.time()
+# result=q25_2016_part1()
+# end_time=time.time()
+# print('result:',result ,'|| execution time: %s s'%"{:.2f}".format(end_time-start_time))
 
