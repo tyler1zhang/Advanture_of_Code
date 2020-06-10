@@ -28,6 +28,8 @@
 .aoc.201605part2: {p:{i:x[0]+1; n:x[1]; while[or[not (last l) in n; not "00000" ~ 5#l:"" sv string (md5 (raze y),string i)[til 3]];i+:1]; (i;n except last l)}[;x]\[8;(0;"01234567")];
                    c:({"" sv x} each string md5 each (raze x),/:string 1_p[;0]) [;5 6];
                    @[8#" ";"J"$'c[;0];:;c[;1]]};
+.aoc.201606part1: {first each key each desc each count each' group each flip x};
+.aoc.201606part2: {first each key each asc each count each' group each flip x};
 
 
 // calculate and profile
