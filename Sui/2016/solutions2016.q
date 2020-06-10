@@ -23,6 +23,11 @@
 .aoc.201604part1: {sum {"J"$-7_last "-" vs x} each x where {(-1_-6#x)~5#key desc count each group asc "" sv -1 _ "-" vs x} each x};
 .aoc.201604part2: {.aoc.decrypt:{.Q.a ((y mod 26)+.Q.a?x) mod 26};
                    "J"$-7_last "-" vs first x where (" " sv' {.aoc.decrypt[;"J"$-7_last "-" vs x] each -1 _ "-" vs x} each x) like "*north*"};
+.aoc.201605part1: {p:{i:x+1; while[not "00000" ~ 5#"" sv string (md5 (raze y),string i)[til 3];i+:1]; i}[;x]\[8;0];
+                   ({"" sv x} each string md5 each (raze x),/:string 1_p)[;5]};
+.aoc.201605part2: {p:{i:x[0]+1; n:x[1]; while[or[not (last l) in n; not "00000" ~ 5#l:"" sv string (md5 (raze y),string i)[til 3]];i+:1]; (i;n except last l)}[;x]\[8;(0;"01234567")];
+                   c:({"" sv x} each string md5 each (raze x),/:string 1_p[;0]) [;5 6];
+                   @[8#" ";"J"$'c[;0];:;c[;1]]};
 
 
 // calculate and profile
