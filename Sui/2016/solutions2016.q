@@ -30,6 +30,13 @@
                    @[8#" ";"J"$'c[;0];:;c[;1]]};
 .aoc.201606part1: {first each key each desc each count each' group each flip x};
 .aoc.201606part2: {first each key each asc each count each' group each flip x};
+.aoc.201607part1: {s:{" " vs @[x;p;:;(count p:raze ss[x;]each"[]")#" "]} each x;
+                   b:{any {any {and[1<count distinct x; x[0 1]~x[3 2]]} each 4 cut x} each 0 1 2 3 _\: x} each' s;
+                   sum {all ({any x};{all not x}) @' x {where x=(til count y) mod 2}[;x] each 0 1} each b};
+.aoc.201607part2: {s:{" " vs @[x;p;:;(count p:raze ss[x;]each"[]")#" "]} each x;
+                   f:{p:raze {raze {c where {and[x[0]=x[2];not x[0]=x[1]]} each c:3 cut x} each 0 1 2 _\: x} each x where 0=(til count x) mod 2;
+                      any any each (x where 1=(til count x) mod 2) like/:\: ({"*",x[1 0 1],"*"} each p)};
+                   sum f each s};
 
 
 // calculate and profile
