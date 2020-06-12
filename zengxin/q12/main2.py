@@ -44,7 +44,7 @@ def main():
 
     # find the number of within the red dicts
     myRedNumberList = re.findall(r'-?\d+', str(myRedList))
-    redResult = sum(list(map(lambda x: int(x), myRedNumberList)))
+    redResult = sum(list(map(int, myRedNumberList)))
 
     # calculate final result
     finalResult = totolResult - redResult

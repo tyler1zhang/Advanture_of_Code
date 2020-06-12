@@ -47,12 +47,14 @@ def two(reactions, molecule):
 
     # put these element in a list and find their appearance time in the molecule
     counter = {el:el_all.count(el) for el in el_no_reaction}
-    print(counter)  # the result is {'Rn': 31, 'C': 1, 'Ar': 31, 'Y': 8}
+    values = sorted(set(counter.values()))
+    print(counter, values)  # the result is {'Rn': 31, 'C': 1, 'Ar': 31, 'Y': 8}
 
     # now, eye ball analysis
     # for the 4 types Rn, C, Ar, Y, everytime there is Rn and Ar come, with C and Y
     # so must be Rn times reaction happen to get here
-    no_reaction_el_step_count = counter["Rn"]
+    # no_reaction_el_step_count = counter["Rn"]
+    no_reaction_el_step_count = values[-1]
     print(no_reaction_el_step_count)
 
     # with this Rn type of reaction, no reaction element(the 4 elements) should add this much length to the final module
@@ -63,14 +65,15 @@ def two(reactions, molecule):
     # every time Y is there, the varialbe element + 1
     # every time C is there, the varialbe does not change quantity, and reduce once the Rn adding
     # so the overall variable add by reaction wiht no_reaction elemenet is this
-    no_reaction_el_increase_variable = counter["Rn"]+counter["Y"]-counter["C"]
+    # replace C with any possible value
+    no_reaction_el_increase_variable = values[-1] + values[1] - values[0]
     
     # the variable_self_add is added by normal reaction, where 1 change to 2, so every reaction element increase 1 in the molecule
     variable_self_add = len(el_all) - no_reaction_el_increase - no_reaction_el_increase_variable
     print(variable_self_add)
 
     # the reaction time happend within reactive variables self iteration
-    variable_self_add_time = variable_self_add -1 
+    variable_self_add_time = variable_self_add - 1 
 
     # final count how many times reaction happened
     result = variable_self_add_time + no_reaction_el_step_count
