@@ -6,7 +6,7 @@ import string
 import re
 import pandas as pd
 import itertools
-
+import json
 
 ############################## Day 1 ##############################
 def day1part1():
@@ -490,7 +490,7 @@ def day9part2():
     return max(day9())
 
 ############################## Day 10 ##############################
-def day9_getNextValue(value):
+def day10_getNextValue(value):
     results = []
     point = 0
     for index, letter in enumerate(value):
@@ -516,15 +516,242 @@ def day10part1():
     values = ["3113322113"]
     times = 40 
     for i in range(times):
-        values.append(day9_getNextValue(values[i]))
+        values.append(day10_getNextValue(values[i]))
     return len(values[-1])
 
 def day10part2():
     values = ["3113322113"]
     times = 50 
     for i in range(times):
-        values.append(day9_getNextValue(values[i]))
+        values.append(day10_getNextValue(values[i]))
     return len(values[-1])
 
-print(day10part2())
+############################## Day 11 ##############################
+def day11(mypassword):
+    atoz = string.ascii_lowercase
+    def base26todecimal(base26str):
+        decimalValue = 0
+        for i, v in enumerate(base26str):
+            num = ord(v)-97 # a is 0, z is 25
+            position = len(base26str)-i-1
+            decimalValue += num*(26**position)
+        return decimalValue
+    def decimaltobase26(number):
+        base26value = ""
+        while number != 0:
+            number , i = divmod(number, 26)
+            base26value = atoz[i]+base26value
+        return base26value
+    def increase(mystr):
+        # transfer to demimal value to perform add 
+        decimalValue = base26todecimal(mystr)
+        newDemcimalValue = decimalValue+1
+        nextValue = decimaltobase26(newDemcimalValue)
+        return nextValue
+    # generate consecurtive 3 letters
+    def generateThreeLetters():
+        results = []
+        for i in range(24):
+            results.append(atoz[i]+atoz[i+1]+atoz[i+2])
+        return results
+    # check if match the criteria
+    def isMatch(mystr):
+        j = False
+        # check if these element exit, easy to retur false if exits
+        if any(el in mystr for el in ["i", "o", "l"]): 
+            return j
+        # check if double letter have 2 sets
+        matchRepeat = re.findall(r'([a-z])\1{1}', mystr)
+        if len(matchRepeat) < 2 :
+            return j
+        # check three consecutive letters
+        threeLetter = generateThreeLetters()
+        for el in threeLetter:
+            if bool(re.search(el, mystr)):
+                j = True
+        return j
 
+    s = False
+    while not s:
+        mypassword = increase(mypassword)
+        s = isMatch(mypassword)
+    return mypassword
+
+def day11part1():
+    return day11("hepxcrrq")
+
+def day11part2():
+    return day11(day11part1())
+
+
+############################## Day 12 ##############################
+def day12part1():
+    mystr = read_file('12','string')
+    myNumberList = re.findall(r'-?\d+', mystr) # optional - using ? in regex
+    result = sum(list(map(lambda x: int(x), myNumberList)))
+    return result
+
+def day12part2():
+    
+    def getRedList(func):
+        myRedList = []
+        def wrapper(*arg):
+            for i in func(*arg):
+                myRedList.append(i)
+            return myRedList
+        return wrapper
+
+    @getRedList
+    def sortLastDictWithRed(startDict):
+        if "red" in startDict.values():
+            # myRedList.append(startDict)
+            yield startDict
+        else:
+            for value in startDict.values():
+                if isinstance(value,dict):
+                    sortLastDictWithRed(value)
+                elif isinstance(value,list): # explore down a layer if a list
+                    for el in value:
+                        if isinstance(el, dict):
+                            sortLastDictWithRed(el)
+                        elif isinstance(el, list):
+                            mydict = {"mydict":el}
+                            sortLastDictWithRed(mydict) # make sure recursion keeps going when list exist, explore down a layer if a list 
+    
+    mystr = read_file('12','string')
+    myNumberList = re.findall(r'-?\d+', mystr) # optional - using ? in regex
+    totolResult = sum(list(map(lambda x: int(x), myNumberList)))
+    # get the list with red in dict as required
+    myjsonDict = json.loads(mystr)
+    # myRedList = getRedList(myjsonDict)
+    myRedList = sortLastDictWithRed(myjsonDict)
+    # find the number of within the red dicts
+    myRedNumberList = re.findall(r'-?\d+', str(myRedList))
+    redResult = sum(list(map(int, myRedNumberList)))
+    # calculate final result
+    return totolResult - redResult
+
+
+############################## Day 13 ##############################
+def day13part1():
+    def getNeighbourHappiness():
+        HappinessPoints = []
+        Names = []
+        mylist = read_file('13','list')
+        for line in mylist:
+            linelist = line.rstrip(".").split()
+            HappinessPoints.append([linelist[0], linelist[-1], int(linelist[3])]) if linelist[2]=="gain" else HappinessPoints.append([linelist[0], linelist[-1], int(linelist[3])*-1])
+            Names.append(linelist[0])
+            NameList = list(set(Names))
+        # print(HappinessPoints, NameList)
+        return HappinessPoints, NameList
+    
+    # calculate each sitting happiness 
+    def calculatePoints(sitting, HappinessPoints):
+        points = 0
+        for i in range(len(sitting)-1):
+            for HP in HappinessPoints:
+                if sitting[i] in HP and sitting[i+1] in HP:
+                    points += HP[2]
+        return points
+
+    results =[]
+    HappinessPoints, NameList = getNeighbourHappiness()
+    # create all name list permutations to use to iterate
+    allPermutations = list(itertools.permutations(NameList))
+    # calculate points and push to results list
+    for sitting in allPermutations:
+        sittingAround = list(sitting)
+        sittingAround.append(sitting[0])
+        results.append(calculatePoints(sittingAround, HappinessPoints))
+    # get the max value 
+    return max(results)
+
+def day13part2():
+    def getNeighbourHappiness():
+        HappinessPoints = []
+        Names = []
+        mylist = read_file('13','list')
+        for line in mylist:
+            linelist = line.rstrip(".").split()
+            HappinessPoints.append([linelist[0], linelist[-1], int(linelist[3])]) if linelist[2]=="gain" else HappinessPoints.append([linelist[0], linelist[-1], int(linelist[3])*-1])
+            Names.append(linelist[0])
+            NameList = list(set(Names))
+        # print(HappinessPoints, NameList)
+        return HappinessPoints, NameList
+        
+    # calculate each sitting happiness 
+    def calculatePoints(sitting, HappinessPoints):
+        points = []
+        for i in range(len(sitting)-1):
+            neighbourPoint = []
+            for HP in HappinessPoints:
+                if sitting[i] in HP and sitting[i+1] in HP:
+                    neighbourPoint.append(HP[2])
+            points.append(sum(neighbourPoint))
+        originalPoints = sum(points)
+        
+        # get the new points when include myself, to remove the samllest impact neighbore point effect
+        points.sort(reverse=True)
+        points.pop()
+        # print(sum(points), originalPoints)
+        return sum(points), originalPoints
+
+    resultsNew = []
+    resultsOriginal = []
+    HappinessPoints, NameList = getNeighbourHappiness()
+    # create all name list permutations to use to iterate
+    allPermutations = list(itertools.permutations(NameList))
+
+    # calculate points and push to results list
+    for sitting in allPermutations:
+        sittingAround = list(sitting)
+        sittingAround.append(sitting[0])
+        newPoints, originalPoints = calculatePoints(sittingAround, HappinessPoints)
+        resultsNew.append(newPoints)
+        resultsOriginal.append(originalPoints)
+    # print("highest point for each case: ", max(resultsNew), max(resultsOriginal))
+    return max(resultsNew)
+############################## Day 14 ##############################
+start = tools.read_file("line")
+
+def get_parameter_list(mylist: list):
+    fly_patthern = []
+    for el in mylist:
+        each = el.rstrip().split(" ")
+        fly_patthern.append([int(each[3]), int(each[6]), int(each[-2])])
+    print("fly patterns: ", fly_patthern)
+    return fly_patthern
+
+def get_distance(race_seconds: int, fly_pattern: list):
+    cycle_seconds = fly_pattern[1] + fly_pattern[2]
+    cycle_distance = fly_pattern[0] * fly_pattern[1]
+    total_cycle, remains =  divmod(race_seconds, cycle_seconds)
+    if remains < fly_pattern[1]:
+        total_distance = cycle_distance * total_cycle + fly_pattern[0] * remains
+    else:
+        total_distance = cycle_distance * (total_cycle + 1)
+    return total_distance
+
+def main(race_seconds: int):
+    results = []
+    fly_pattern_list = get_parameter_list(start)
+    for fly_pattern in fly_pattern_list:
+        r = get_distance(race_seconds, fly_pattern)
+        results.append(r)
+    result = max(results)
+    print(result)
+    return result
+
+main(2503)
+
+
+
+############################## Day 15 ##############################
+############################## Day 16 ##############################
+############################## Day 17 ##############################
+############################## Day 18 ##############################
+############################## Day 19 ##############################
+############################## Day 20 ##############################
+
+print(day13part2())
