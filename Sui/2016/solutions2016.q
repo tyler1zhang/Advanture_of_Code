@@ -45,6 +45,16 @@
                    .aoc.m:6#enlist 50#0b;
                    f:{$[x[0]=`rect; .aoc.m[til x[2];til x[1]]:1b; x[0]=`row; .aoc.m[x[1]]:neg[x[2]] rotate .aoc.m[x[1]]; .aoc.m[;x[1]]:neg[x[2]] rotate .aoc.m[;x[1]]]};
                    f each ins; p:(10b!"* ") .aoc.m; show "    ",/:p,\: "    "; "above"};
+.aoc.201609part1: {s:raze x; r:"";
+                   while["(" in s; p:first ss[s;"("]; r,:p#s; s:p _ s; q:first ss[s;")"]; c:"J"$"x" vs -1 _ 1 _ (q+1)#s; s:(q+1) _ s; r,:raze c[1]#enlist c[0]#s; s:c[0] _ s];
+                   count r,s};
+.aoc.201609part2: {s:raze x;
+                   f:{$[not "(" in x; count x;
+                        [r:first ss[x;")"]; l:first ss[x;"("];
+                         c:"J"$"x" vs -1 _ 1 _ x{(except/)til each (y+1;x)}[l;r];
+                         n:c[0]; m:c[1];
+                         l + (m*.z.s[n#(r+1)_x]) + (.z.s[(n+r+1)_x])]]};
+                   f s}
 
 
 // calculate and profile
