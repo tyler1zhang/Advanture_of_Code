@@ -37,6 +37,14 @@
                    f:{p:raze {raze {c where {and[x[0]=x[2];not x[0]=x[1]]} each c:3 cut x} each 0 1 2 _\: x} each x where 0=(til count x) mod 2;
                       any any each (x where 1=(til count x) mod 2) like/:\: ({"*",x[1 0 1],"*"} each p)};
                    sum f each s};
+.aoc.201608part1: {ins:{$[x like "rect*"; (`$v[0]), "J"$"x" vs last v:" " vs x; (`$v[1]),("J"$last "=" vs v[2]),("J"$last v:" " vs x)]} each x;
+                   .aoc.m:6#enlist 50#0b;
+                   f:{$[x[0]=`rect; .aoc.m[til x[2];til x[1]]:1b; x[0]=`row; .aoc.m[x[1]]:neg[x[2]] rotate .aoc.m[x[1]]; .aoc.m[;x[1]]:neg[x[2]] rotate .aoc.m[;x[1]]]};
+                   f each ins; sum sum each .aoc.m};
+.aoc.201608part2: {ins:{$[x like "rect*"; (`$v[0]), "J"$"x" vs last v:" " vs x; (`$v[1]),("J"$last "=" vs v[2]),("J"$last v:" " vs x)]} each x;
+                   .aoc.m:6#enlist 50#0b;
+                   f:{$[x[0]=`rect; .aoc.m[til x[2];til x[1]]:1b; x[0]=`row; .aoc.m[x[1]]:neg[x[2]] rotate .aoc.m[x[1]]; .aoc.m[;x[1]]:neg[x[2]] rotate .aoc.m[;x[1]]]};
+                   f each ins; p:(10b!"* ") .aoc.m; show "    ",/:p,\: "    "; "above"};
 
 
 // calculate and profile
