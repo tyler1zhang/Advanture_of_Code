@@ -54,7 +54,31 @@
                          c:"J"$"x" vs -1 _ 1 _ x{(except/)til each (y+1;x)}[l;r];
                          n:c[0]; m:c[1];
                          l + (m*.z.s[n#(r+1)_x]) + (.z.s[(n+r+1)_x])]]};
-                   f s}
+                   f s};
+.aoc.201610part1: {v:(i:"J"$" " vs' x where x like "value*")[;1]; b:i[;5];
+                   p:value g:group b; .aoc.bot:(key g)!asc each v p; .aoc.output:(`long$())!`long$();
+                   instructions:{("J"$x[1];`$x[5];"J"$x[6];`$x[10];"J"$x[11])} each " " vs' x where x like "bot*";
+                   move:{if[not 2=count .aoc.bot[x[0]];:(::)]; if[17 61~.aoc.bot[x[0]];:(::)];
+                         $[`bot=x[1];
+                           .aoc.bot[x[2]]::asc .aoc.bot[x[2]], .aoc.bot[x[0]][0];
+                           .aoc.output[x[2]]::.aoc.bot[x[0]][0]];
+                         $[`bot=x[3];
+                           .aoc.bot[x[4]]::asc .aoc.bot[x[4]], .aoc.bot[x[0]][1];
+                           .aoc.output[x[4]]::.aoc.bot[x[0]][1]];
+                         .aoc.bot[x[0]]:`long$()};
+                   while[not 17 61 in value .aoc.bot; move each instructions]; .aoc.bot?17 61};
+.aoc.201610part2: {v:(i:"J"$" " vs' x where x like "value*")[;1]; b:i[;5];
+                   p:value g:group b; .aoc.bot:(key g)!asc each v p; .aoc.output:(`long$())!`long$();
+                   instructions:{("J"$x[1];`$x[5];"J"$x[6];`$x[10];"J"$x[11])} each " " vs' x where x like "bot*";
+                   move:{if[not 2=count .aoc.bot[x[0]];:(::)];
+                         $[`bot=x[1];
+                           .aoc.bot[x[2]]::asc .aoc.bot[x[2]], .aoc.bot[x[0]][0];
+                           .aoc.output[x[2]]::.aoc.bot[x[0]][0]];
+                         $[`bot=x[3];
+                           .aoc.bot[x[4]]::asc .aoc.bot[x[4]], .aoc.bot[x[0]][1];
+                           .aoc.output[x[4]]::.aoc.bot[x[0]][1]];
+                         .aoc.bot[x[0]]:`long$()};
+                   while[any null .aoc.output[0 1 2]; move each instructions]; prd .aoc.output[0 1 2]};
 
 
 // calculate and profile
