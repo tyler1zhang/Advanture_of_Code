@@ -713,45 +713,397 @@ def day13part2():
     # print("highest point for each case: ", max(resultsNew), max(resultsOriginal))
     return max(resultsNew)
 ############################## Day 14 ##############################
-start = tools.read_file("line")
+def day14part1():
+    def get_parameter_list(mylist: list):
+        fly_patthern = []
+        for el in mylist:
+            each = el.rstrip().split(" ")
+            fly_patthern.append([int(each[3]), int(each[6]), int(each[-2])])
+        return fly_patthern
 
-def get_parameter_list(mylist: list):
-    fly_patthern = []
-    for el in mylist:
-        each = el.rstrip().split(" ")
-        fly_patthern.append([int(each[3]), int(each[6]), int(each[-2])])
-    print("fly patterns: ", fly_patthern)
-    return fly_patthern
+    def get_distance(race_seconds: int, fly_pattern: list):
+        cycle_seconds = fly_pattern[1] + fly_pattern[2]
+        cycle_distance = fly_pattern[0] * fly_pattern[1]
+        total_cycle, remains =  divmod(race_seconds, cycle_seconds)
+        if remains < fly_pattern[1]:
+            total_distance = cycle_distance * total_cycle + fly_pattern[0] * remains
+        else:
+            total_distance = cycle_distance * (total_cycle + 1)
+        return total_distance
 
-def get_distance(race_seconds: int, fly_pattern: list):
-    cycle_seconds = fly_pattern[1] + fly_pattern[2]
-    cycle_distance = fly_pattern[0] * fly_pattern[1]
-    total_cycle, remains =  divmod(race_seconds, cycle_seconds)
-    if remains < fly_pattern[1]:
-        total_distance = cycle_distance * total_cycle + fly_pattern[0] * remains
-    else:
-        total_distance = cycle_distance * (total_cycle + 1)
-    return total_distance
-
-def main(race_seconds: int):
+    race_seconds = 2503
+    start = read_file("14", "list")
     results = []
     fly_pattern_list = get_parameter_list(start)
     for fly_pattern in fly_pattern_list:
         r = get_distance(race_seconds, fly_pattern)
         results.append(r)
     result = max(results)
-    print(result)
     return result
 
-main(2503)
+def day14part2():
+    def get_parameter_list(mylist: list):
+        fly_patthern = []
+        for el in mylist:
+            each = el.rstrip().split(" ")
+            # add name to fly pattern for future points given
+            fly_patthern.append([int(each[3]), int(each[6]), int(each[-2]), each[0]])
+        return fly_patthern
 
+    def get_distance(race_seconds: int, fly_pattern: list):
+        cycle_seconds = fly_pattern[1] + fly_pattern[2]
+        cycle_distance = fly_pattern[0] * fly_pattern[1]
+        total_cycle, remains =  divmod(race_seconds, cycle_seconds)
+        if remains < fly_pattern[1]:
+            total_distance = cycle_distance * total_cycle + fly_pattern[0] * remains
+        else:
+            total_distance = cycle_distance * (total_cycle + 1)
+        # get the name and distance at each second
+        return fly_pattern[-1], total_distance
 
+    def get_name(race_seconds: int):    
+        winner_names = {}
+        fly_pattern_list = get_parameter_list(start)
+        for fly_pattern in fly_pattern_list:
+            name, total_distance = get_distance(race_seconds, fly_pattern)
+            winner_names[name] = total_distance
+        winner_name = [key for key, value in winner_names.items() if value == max(winner_names.values())]
+        return winner_name[0]
+    
+    totol_seconds = 2503
+    start = read_file("14", "list")
+    winner_name_scoreboard = {}
+    for i in range(totol_seconds):
+        winner = get_name(i+1)
+        if winner in winner_name_scoreboard:
+            winner_name_scoreboard[winner] += 1  
+        else:
+            winner_name_scoreboard[winner] = 1
+    return max(winner_name_scoreboard.values())
 
 ############################## Day 15 ##############################
+def get_parameter_list(mylist: list):
+    parameters = []
+    for el in mylist:
+        numbers = re.findall(r'-?\d+', el)
+        parameters.append(list(map(lambda el: int(el), numbers)))
+    return parameters
+
+def day15part1():
+    start_list = read_file("15", "list")
+
+    def cal_score(parameters: list, recipe: list):
+        total_score = 0
+        # get the property to iterate first, for exmaple capcity as the first i, leave the calories
+        properties = len(parameters[0]) - 1
+        total_score = 1
+        for i in range(properties):
+            property_score = 0
+            for j in range(len(recipe)):
+                property_score += parameters[j][i] * recipe[j]
+            if property_score < 0:
+                property_score = 0
+            total_score *= property_score
+        return total_score
+
+    def cal_recipi_combination_score(parameters):
+        # the ingredients type is 4, so the recipe here is 4, so to for loop 4 times
+        for i in range(101):
+            for j in range(101-i):
+                for k in range(101-i-j):
+                    for l in range(101-i-j-k):
+                        recipe = [i, j, k, l]
+                        recipe_score = cal_score(parameters, recipe)
+                        yield recipe_score
+    
+    parameters = get_parameter_list(start_list)
+    final_score = cal_recipi_combination_score(parameters)
+    highest_score = max(final_score)
+    return highest_score
+
+def day15part2():
+    start_list = read_file("15", "list")
+
+    def cal_score_with_calories(parameters: list, recipe: list):
+        total_score = 0
+        # get the property to iterate first, for exmaple capcity as the first i, leave the calories
+        properties = len(parameters[0]) - 1
+        total_score = 1
+        for i in range(properties):
+            property_score = 0
+            calories_score = 0
+            for j in range(len(recipe)):
+                property_score += parameters[j][i] * recipe[j]
+                calories_score += parameters[j][len(parameters[0]) - 1] * recipe[j]
+            if property_score < 0:
+                property_score = 0
+            elif calories_score != 500:
+                property_score = 0
+            total_score *= property_score
+        return total_score
+
+    def cal_recipi_combination_score(parameters):
+        # the ingredients type is 4, so the recipe here is 4, so to for loop 4 times
+        for i in range(101):
+            for j in range(101-i):
+                for k in range(101-i-j):
+                    for l in range(101-i-j-k):
+                        recipe = [i, j, k, l]
+                        recipe_score = cal_score_with_calories(parameters, recipe)
+                        yield recipe_score
+
+    parameters = get_parameter_list(start_list)
+    final_score = cal_recipi_combination_score(parameters)
+    highest_score = max(final_score)
+    return highest_score
 ############################## Day 16 ##############################
+def day16part1():
+    start_list = read_file("16", "list")
+    message = {"children": 3,
+           "cats": 7,
+           "samoyeds": 2,
+           "pomeranians": 3,
+           "akitas": 0,
+           "vizslas": 0,
+           "goldfish": 5,
+           "trees": 3,
+           "cars": 2,
+           "perfumes": 1}
+
+    one_message = {}
+    for k, v in message.items():
+        one_message[k] = str(v)
+
+    for line in start_list:
+        mylist = re.split(": |, ", line)
+        it = iter(mylist[1:])
+        rec_dict = dict(zip(it, it))
+        if rec_dict.items() <= one_message.items():
+            return line.split(" ")[1]
+
+def day16part2():
+    start_list = read_file("16", "list")
+    message = {"children": 3,
+           "cats": 7,
+           "samoyeds": 2,
+           "pomeranians": 3,
+           "akitas": 0,
+           "vizslas": 0,
+           "goldfish": 5,
+           "trees": 3,
+           "cars": 2,
+           "perfumes": 1}
+    for line in start_list:
+        mylist = re.split(": |, ", line)
+        it = iter(mylist[1:])
+        rec_dict = dict(zip(it, it))
+        
+        match = True
+        for k,v in rec_dict.items():
+            if k in ["children", "samoyeds", "akitas", "vizslas", "cars", "perfumes"]: 
+                if message[k] != int(v):
+                    match = False
+                    break
+            elif k in ["cats", "trees"]:
+                if message[k] >= int(v):
+                    match = False
+                    break
+            elif k in ["pomeranians", "goldfish"]:
+                if message[k] <= int(v):
+                    match = False
+                    break
+        if match:
+            return line.split(" ")[1]
+
 ############################## Day 17 ##############################
+def get_max_min(num_list):
+    num_list.sort()
+    for i in range(len(num_list)):
+        if sum(num_list[:i+1]) == 150:
+            max_n = i+1
+            break
+        elif sum(num_list[:i+1]) > 150:
+            max_n = i
+            break
+    num_list.sort(reverse=True)
+    for i in range(len(num_list)):
+        if sum(num_list[:i+1]) >= 150:
+            min_n = i+1
+            break
+    return max_n, min_n
+
+def day17part1():
+    START_LIST = read_file("17", "list")
+    """main function"""
+    result = 0
+    num_list = [int(i) for i in START_LIST]
+    max_n, min_n = get_max_min(num_list)
+    for i in range(min_n, max_n+1):
+        combination = itertools.combinations(num_list, i)
+        for j in combination:
+            # print(f"i is {i}, j is {j} sum is {sum(j)}")
+            if sum(j) == 150:
+                result += 1
+    return result
+
+def day17part2():
+    START_LIST = read_file("17", "list")
+    result = 0
+    num_list = [int(i) for i in START_LIST]
+    max_n, min_n = get_max_min(num_list)
+    combination = itertools.combinations(num_list, min_n)
+    for j in combination:
+        if sum(j) == 150:
+            result += 1
+    return result
+
 ############################## Day 18 ##############################
+def data_transform_18(data_input):
+    a = list(map(lambda el: list(map(lambda el: 1 if el == "#" else 0, el)), data_input))
+    all_zero = [0 for i in range(100)]
+    b = [all_zero, *a, all_zero]
+    c = list(map(lambda el: [0, *el, 0], b))
+    return c
+
+def cal_one_round(data):
+    result = [a[:] for a in data]
+    # need to break 2 layers
+    # need to break the result to the elemental layer, otherwise the calculation cannot work
+    # is only break one layer like result = data[:], then list of result[0] and data[0] is pointing to the same list
+    # can use the id to check this, so every time data[i][j] change, result[i][j] also change
+
+    # can uncomment the following 3 lines to check this one, check the id
+    # result = data[:]
+    # print(id(result[0]))
+    # print(id(data[0]))
+
+    for i in range(1, len(data)-1):
+        for j in range(1, len(data[0])-1):
+            if data[i][j] == 1 and check_neighbour_18(data, i, j, "on"):
+                # print(data[i][j])
+                # print(result[i][j])
+                result[i][j] = 0 
+                # print(data[i][j])
+                # print(result[i][j])
+            elif data[i][j] == 0 and check_neighbour_18(data, i, j, "off"):
+                result[i][j] = 1
+    return result
+
+def check_neighbour_18(data, i, j, condition):
+    sum_all = 0
+    for a in range(i-1, i+2):
+        for b in range(j-1, j+2):
+            sum_all += data[a][b]
+    if (condition == "on" and sum_all not in (3, 4)) or (condition == "off" and (sum_all == 3)):
+        return True
+    return False
+
+def day18part1():
+    START_LIST = read_file("18", "list")
+    ready_data = data_transform_18(START_LIST)
+    for i in range(100):
+        ready_data = cal_one_round(ready_data)
+    result = sum(map(sum, ready_data))
+    return result
+
+def day18part2():
+    START_LIST = read_file("18", "list")
+
+    def cal_one_round_two(data):
+        result = [a[:] for a in data]
+        for i in range(1, len(data)-1):
+            for j in range(1, len(data[0])-1):
+                if data[i][j] == 1 and check_neighbour_18(data, i, j, "on"):
+                    if (i,j) not in [(1,1), (1,100), (100,1), (100,100)]:
+                        result[i][j] = 0 
+                elif data[i][j] == 0 and check_neighbour_18(data, i, j, "off"):
+                    result[i][j] = 1
+        return result
+
+    ready_data = data_transform_18(START_LIST)
+    ready_data[1][1] = ready_data[1][100]=ready_data[100][1]=ready_data[100][100]=1
+    for i in range(100):
+        ready_data = cal_one_round_two(ready_data)
+    result = sum(map(sum, ready_data))
+    return result
+
 ############################## Day 19 ##############################
+
+def day19part1():
+    START_LIST = read_file("19", "list")
+    START_MOLECULE = "CRnCaSiRnBSiRnFArTiBPTiTiBFArPBCaSiThSiRnTiBPBPMgArCaSiRnTiMgArCaSiThCaSiRnFArRnSiRnFArTiTiBFArCaCaSiRnSiThCaCaSiRnMgArFYSiRnFYCaFArSiThCaSiThPBPTiMgArCaPRnSiAlArPBCaCaSiRnFYSiThCaRnFArArCaCaSiRnPBSiRnFArMgYCaCaCaCaSiThCaCaSiAlArCaCaSiRnPBSiAlArBCaCaCaCaSiThCaPBSiThPBPBCaSiRnFYFArSiThCaSiRnFArBCaCaSiRnFYFArSiThCaPBSiThCaSiRnPMgArRnFArPTiBCaPRnFArCaCaCaCaSiRnCaCaSiRnFYFArFArBCaSiThFArThSiThSiRnTiRnPMgArFArCaSiThCaPBCaSiRnBFArCaCaPRnCaCaPMgArSiRnFYFArCaSiThRnPBPMgAr"
+    results = set()
+    for i, v in enumerate(START_LIST):
+        reaction = v.split(" => ")
+        mol_list = START_MOLECULE.split(reaction[0])
+        if len(mol_list) > 1:
+            for j, k in enumerate(mol_list):
+                if j < len(mol_list)-1:
+                    a = reaction[0].join(mol_list[:j+1])
+                    b = reaction[0].join(mol_list[j+1:])
+                    new = [a, reaction[1], b]
+                    results.add("".join(new))
+        else:
+            continue
+    return(len(results))
+
+def day19part2():
+    START_LIST = read_file("19", "list")
+    START_MOLECULE = "CRnCaSiRnBSiRnFArTiBPTiTiBFArPBCaSiThSiRnTiBPBPMgArCaSiRnTiMgArCaSiThCaSiRnFArRnSiRnFArTiTiBFArCaCaSiRnSiThCaCaSiRnMgArFYSiRnFYCaFArSiThCaSiThPBPTiMgArCaPRnSiAlArPBCaCaSiRnFYSiThCaRnFArArCaCaSiRnPBSiRnFArMgYCaCaCaCaSiThCaCaSiAlArCaCaSiRnPBSiAlArBCaCaCaCaSiThCaPBSiThPBPBCaSiRnFYFArSiThCaSiRnFArBCaCaSiRnFYFArSiThCaPBSiThCaSiRnPMgArRnFArPTiBCaPRnFArCaCaCaCaSiRnCaCaSiRnFYFArFArBCaSiThFArThSiThSiRnTiRnPMgArFArCaSiThCaPBCaSiRnBFArCaCaPRnCaCaPMgArSiRnFYFArCaSiThRnPBPMgAr"
+    '''
+    General rule
+    Notice there are some element that does not iterate further with reaction
+    So every time this element show 1 time, the reaction run 1 time
+    '''
+    # find all the elemnt and the length of all the final modecule
+    el_all = re.findall(r"[A-Z][a-z]*", START_MOLECULE)
+    el_all_set = set(el_all)
+    # print(el_all)
+    # print(len(el_all))
+
+    # find el that can do further reactions
+    reaction_variables = set(map(lambda el: el.split(" ")[0], START_LIST))
+    # print(reaction_variables)
+
+    # find el that cannot do further reactions
+    el_no_reaction = el_all_set - reaction_variables
+    # print(el_no_reaction)
+
+    # put these element in a list and find their appearance time in the molecule
+    counter = {el:el_all.count(el) for el in el_no_reaction}
+    values = sorted(set(counter.values()))
+    # print(counter, values)  # the result is {'Rn': 31, 'C': 1, 'Ar': 31, 'Y': 8}
+
+    # now, eye ball analysis
+    # for the 4 types Rn, C, Ar, Y, everytime there is Rn and Ar come, with C and Y
+    # so must be Rn times reaction happen to get here
+    # no_reaction_el_step_count = counter["Rn"]
+    no_reaction_el_step_count = values[-1]
+    # print(no_reaction_el_step_count)
+
+    # with this Rn type of reaction, no reaction element(the 4 elements) should add this much length to the final module
+    no_reaction_el_increase = sum(counter.values())
+    # print(no_reaction_el_increase)
+
+    # addtionally, every time Rn is there, the variable element + 1
+    # every time Y is there, the varialbe element + 1
+    # every time C is there, the varialbe does not change quantity, and reduce once the Rn adding
+    # so the overall variable add by reaction wiht no_reaction elemenet is this
+    # replace C with any possible value
+    no_reaction_el_increase_variable = values[-1] + values[1] - values[0]
+    
+    # the variable_self_add is added by normal reaction, where 1 change to 2, so every reaction element increase 1 in the molecule
+    variable_self_add = len(el_all) - no_reaction_el_increase - no_reaction_el_increase_variable
+    # print(variable_self_add)
+
+    # the reaction time happend within reactive variables self iteration
+    variable_self_add_time = variable_self_add - 1 
+
+    # final count how many times reaction happened
+    result = variable_self_add_time + no_reaction_el_step_count
+    # print(variable_self_add_time + no_reaction_el_step_count)
+    return result
+
 ############################## Day 20 ##############################
 
-print(day13part2())
+print(day19part1())
