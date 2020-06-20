@@ -1,3 +1,5 @@
+import sys
+sys.path.append("./lib")
 
 from util import read_file
 from functools import reduce
@@ -7,6 +9,9 @@ import re
 import pandas as pd
 import itertools
 import json
+import math
+import collections
+
 
 ############################## Day 1 ##############################
 def day1part1():
@@ -201,7 +206,7 @@ def day6part2():
         lights.loc[x1:x2,y1:y2] += 2
 
     my_list = read_file('6', "list")
-    for line in mylist:
+    for line in my_list:
         numstr = re.findall(r'\d+',line)
         num = list(map(lambda x: int(x),numstr)) # need to change to int otherwise has some parsing issue
         if 'on' in line:
@@ -1105,5 +1110,116 @@ def day19part2():
     return result
 
 ############################## Day 20 ##############################
+def get_prime_factor_list(start, house_number):
+    # get all the prime factors, meaning to break as small as possible
+    prime_factor_list = []
+    def get_prime_factor(start, house_number):
+        for i in range(start, (house_number//start)+1):
+            if house_number % i == 0:
+                prime_factor_list.append(i)
+                get_prime_factor(i, house_number//i)
+                break
+        prime_factor_list.append(house_number)
+    get_prime_factor(start, house_number)
+    return prime_factor_list[:(len(prime_factor_list)//2+1)]
 
-print(day19part1())
+def cal_all_combination_factors(factor_list):
+    # from the prime factors, get all the factors 
+    r = [i for i in factor_list]
+    for k in range(2, len(factor_list)+1):
+        combination = itertools.combinations(factor_list, k)
+        for i in combination:
+            b =  reduce(lambda x, y: x*y, i)   
+            r.append(b)
+    return list(set(r))
+
+def day20part1():
+    limit = 29000000
+    # the number must have factor of 2 and 3, all prime number is 6n+1 or 6n-1
+    for i in range(6,2900000,6):
+        prime_factor_list = get_prime_factor_list(2, i)
+        # print("prime factor list", prime_factor_list)
+        if len(prime_factor_list) == 1:
+            pass
+        else:
+            value = sum(cal_all_combination_factors(prime_factor_list))
+            if value*10>limit:
+                return i
+
+def day20part2():
+    limit = 29000000
+    # the number must have factor of 2 and 3, all prime number is 6n+1 or 6n-1
+    for i in range(6,2900000,6):
+        prime_factor_list = get_prime_factor_list(2, i)
+        # print("prime factor list", prime_factor_list)
+        if len(prime_factor_list) == 1:
+            pass
+        else:
+            combination_list = cal_all_combination_factors(prime_factor_list)
+            # remove those less than 50 times, then to get the remaining
+            gift_combination_list = filter(lambda x: x*50>=i, combination_list)
+            value = sum(gift_combination_list)
+            if value*11>limit:
+                return i
+
+############################## Day 21 ##############################
+def day21():
+    # define boss and player
+    Profile = collections.namedtuple("Profile", ["HP", "Damage", "Armor"])
+    boss = Profile(104, 8, 1)
+    player_damage, player_armor  = 0, 0
+
+    # define items to choose
+    Items = collections.namedtuple("Items", "Cost, Damage, Armor")
+    Weapons = list(map(Items._make, [[8, 4, 0], [10, 5, 0], [25, 6, 0], [40, 7, 0], [74, 8, 0]]))
+    # add no choose condition as [0, 0, 0]
+    Armors = list(map(Items._make, [[13, 0, 1], [31, 0, 2], [53, 0, 3], [75, 0, 4], [102, 0, 5], [0, 0, 0]])) 
+    Rings = list(map(Items._make, [[25, 1, 0], [50, 2, 0], [100, 3, 0], [20, 0, 1], [40, 0, 2], [80, 0, 3], [0, 0, 0]]))
+
+    total_cost_win = []
+    total_cost_lose = []
+    # player equip situations evaluation to if win
+    for w, a, r1, r2 in itertools.product(Weapons, Armors, Rings, Rings):
+        if r1.Cost != r2.Cost or r1.Cost == 0 or r2.Cost == 0:
+            player_damage = w.Damage+a.Damage+r1.Damage+r2.Damage
+            player_armor = w.Armor+a.Armor+r1.Armor+r2.Armor
+            # evaluate winning situation, considering player attack first
+            boss_drop = max(1,player_damage-boss.Armor)
+            player_drop = max(1, boss.Damage-player_armor)
+            # win conditions
+            if boss_drop > player_drop:
+                total_cost_win.append(w.Cost+a.Cost+r1.Cost+r2.Cost) 
+            # as player attack first
+            elif boss_drop == player_drop and 100%boss_drop != 0 and boss_drop-(100%boss_drop)>=4:
+                total_cost_win.append(w.Cost+a.Cost+r1.Cost+r2.Cost) 
+            else: 
+                total_cost_lose.append(w.Cost+a.Cost+r1.Cost+r2.Cost)
+    return min(total_cost_win), max(total_cost_lose)
+
+def day21part1():
+    return day21()[0]
+
+
+def day21part2():
+    return day21()[1]
+
+############################## Day 22 ##############################
+
+
+
+
+if __name__ == "__main__": print(day6part1())
+
+
+
+
+
+
+
+
+
+
+
+
+
+
