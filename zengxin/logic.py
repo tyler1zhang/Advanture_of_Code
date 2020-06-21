@@ -7,6 +7,8 @@ import re
 import pandas as pd
 import itertools
 import json
+import math
+
 
 ############################## Day 1 ##############################
 def day1part1():
@@ -201,7 +203,7 @@ def day6part2():
         lights.loc[x1:x2,y1:y2] += 2
 
     my_list = read_file('6', "list")
-    for line in mylist:
+    for line in my_list:
         numstr = re.findall(r'\d+',line)
         num = list(map(lambda x: int(x),numstr)) # need to change to int otherwise has some parsing issue
         if 'on' in line:
@@ -1105,5 +1107,58 @@ def day19part2():
     return result
 
 ############################## Day 20 ##############################
+def get_prime_factor_list(start, house_number):
+    prime_factor_list = []
+    def get_prime_factor(start, house_number):
+        for i in range(start, (house_number//start)+1):
+            if house_number % i == 0:
+                prime_factor_list.append(i)
+                get_prime_factor(i, house_number//i)
+                break
+        prime_factor_list.append(house_number)
+    get_prime_factor(start, house_number)
+    return prime_factor_list[:(len(prime_factor_list)//2+1)]
 
-print(day19part1())
+def cal_all_combination_factors(factor_list):
+    r = [i for i in factor_list]
+    for k in range(2, len(factor_list)+1):
+        combination = itertools.combinations(factor_list, k)
+        for i in combination:
+            b =  reduce(lambda x, y: x*y, i)   
+            r.append(b)
+    return list(set(r))
+
+def day20part1():
+    limit = 29000000
+    # the number must have factor of 2 and 3, all prime number is 6n+1 or 6n-1
+    for i in range(6,2900000,6):
+        prime_factor_list = get_prime_factor_list(2, i)
+        # print("prime factor list", prime_factor_list)
+        if len(prime_factor_list) == 1:
+            pass
+        else:
+            value = sum(cal_all_combination_factors(prime_factor_list))
+            if value*10>limit:
+                return i
+
+def day20part2():
+    limit = 29000000
+    # the number must have factor of 2 and 3, all prime number is 6n+1 or 6n-1
+    for i in range(6,2900000,6):
+        prime_factor_list = get_prime_factor_list(2, i)
+        # print("prime factor list", prime_factor_list)
+        if len(prime_factor_list) == 1:
+            pass
+        else:
+            combination_list = cal_all_combination_factors(prime_factor_list)
+            # remove those less than 50 times, then to get the remaining
+            gift_combination_list = filter(lambda x: x*50>=i, combination_list)
+            value = sum(gift_combination_list)
+            if value*11>limit:
+                return i
+
+############################## Day 21 ##############################
+
+
+
+print(day6part2())
