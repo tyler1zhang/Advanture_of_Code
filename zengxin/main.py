@@ -9,8 +9,20 @@ try to use the cpripper structure to do
 put all script together in one script like bird do, then use handle separate, and data seperate
 '''
 
-# import sys
-# sys.path.insert(0, "./input")
+import sys
+sys.path.insert(0, "./input")
+sys.path.insert(0, "./lib")
+
+from util import read_file
+import functions
+
+a = functions.day21.day21part1()
+b = functions.day21.day21part2()
+print(a)
+print(b)
+print("abc")
+
+
 
 # EVENT = {"Day": "1", "Part": "1"}
 # def invoker(event, context):
