@@ -1,3 +1,5 @@
+import sys
+sys.path.append("./lib")
 
 from util import read_file
 from functools import reduce
@@ -1201,9 +1203,12 @@ def day21part1():
 def day21part2():
     return day21()[1]
 
-############################## Day 21 ##############################
+############################## Day 22 ##############################
 
-if __name__ == "__main__": print(day21part2())
+
+
+
+if __name__ == "__main__": print(day6part1())
 
 
 
