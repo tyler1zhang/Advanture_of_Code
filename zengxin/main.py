@@ -32,8 +32,8 @@ function_mapping = {
     "day4part2": logic.day4part2,
     "day5part1": logic.day5part1,
     "day5part2": logic.day5part2,
-    "day6part1": logic.day6part1,
-    "day6part2": logic.day6part2,
+    # "day6part1": logic.day6part1,
+    # "day6part2": logic.day6part2,
     "day7part1": logic.day7part1,
     "day7part2": logic.day7part2,
     "day8part1": logic.day8part1,
@@ -77,7 +77,7 @@ function_mapping = {
 def respond(err, res=None):
     return {
         'statusCode': '400' if err else '200',
-        'body': err if err else json.dumps(res),
+        'body': json.dumps({"result": err}) if err else json.dumps(res),
         'headers': {
             'Content-Type': 'application/json',
         },
@@ -104,9 +104,3 @@ def lambda_handler(event, context):
         # return respond(err.args[0])
     except Exception as e:
         return respond(f"error occured as {e}")
-
-print(lambda_handler(event, "abc"))
-
-
-
-
