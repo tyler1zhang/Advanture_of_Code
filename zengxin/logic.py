@@ -117,7 +117,7 @@ def oneperson(arrows):
 ############################## Day 4 ##############################
 def day4part1():
     initValue = read_file("4", "string")
-    calculate(initValue, "00000")
+    return calculate(initValue, "00000")
 
 def calculate(initValue, target):
     restValue = 0
@@ -134,7 +134,7 @@ def calculate(initValue, target):
 
 def day4part2():
     initValue = read_file("4", "string")
-    calculate(initValue, "000000")
+    return calculate(initValue, "000000")
 
 ############################## Day 5 ##############################
 def day5part1():
