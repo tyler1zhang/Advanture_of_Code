@@ -6,7 +6,7 @@ from functools import reduce
 import hashlib
 import string
 import re
-# import pandas as pd
+import pandas as pd
 import itertools
 import json
 import math
@@ -193,7 +193,7 @@ def day6part1():
             turnoff(*num)
         elif "toggle" in line:
             toggle(*num)
-    return lights.values.sum()
+    return int(lights.values.sum())
 
 def day6part2():
     lights = pd.DataFrame(0, range(0,1000), range(0,1000))
@@ -215,7 +215,7 @@ def day6part2():
             turnoff(*num)
         elif "toggle" in line:
             toggle(*num)
-    return lights.values.sum()
+    return int(lights.values.sum())
 
 ############################## Day 7 ##############################
 def day7part1():
