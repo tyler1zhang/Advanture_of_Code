@@ -63,15 +63,15 @@ function_mapping = {
     "day20part1": logic.day20part1,
     "day20part2": logic.day20part2,
     "day21part1": logic.day21part1,
-    "day21part2": logic.day21part2
-    # "day22part1": logic.day22part1,
-    # "day22part2": logic.day22part2,
-    # "day23part1": logic.day23part1,
-    # "day23part2": logic.day23part2,
-    # "day24part1": logic.day24part1,
-    # "day24part2": logic.day24part2,
-    # "day25part1": logic.day25part1,
-    # "day25part2": logic.day25part2
+    "day21part2": logic.day21part2,
+    "day22part1": logic.day22part1,
+    "day22part2": logic.day22part2,
+    "day23part1": logic.day23part1,
+    "day23part2": logic.day23part2,
+    "day24part1": logic.day24part1,
+    "day24part2": logic.day24part2,
+    "day25part1": logic.day25part1,
+    "day25part2": logic.day25part2
 }
 
 def respond(err, res=None):
