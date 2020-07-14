@@ -1363,8 +1363,61 @@ def day22part1():
 def day22part2():
     return day22("hard")
 
+############################## Day 23 ##############################
+def day23(start_a):
+    instruction_list = read_file('23', 'list') 
+    # use gloabl in nested functions, must declare in both inner and outer function 
+    global a, b, position, instruction_length
+    a = start_a
+    b = 0
+    position = 0
+    instruction_length = len(instruction_list)
 
-if __name__ == "__main__": print(day22part1())
+    def run_instruction(instruction):
+        global a, b, position, instruction_length
+        if "hlf" in instruction:
+            a = a / 2
+            position += 1
+        elif "tpl" in instruction:
+            a = a * 3
+            position += 1
+        elif "inc" in instruction and instruction[4] == "a":
+            a += 1
+            position += 1
+        elif "inc" in instruction and instruction[4] == "b":
+            b += 1
+            position += 1
+        elif "jmp" in instruction:
+            position += int("".join(instruction[-3:]).strip())
+        elif "jie" in instruction and (a % 2) == 0: 
+            position += int("".join(instruction[-3:]).strip())
+        elif "jie" in instruction and (a % 2) == 1: 
+            position += 1
+        elif "jio" in instruction and  a == 1:
+            position += int("".join(instruction[-3:]).strip())
+        elif "jio" in instruction and  a != 1:
+            position += 1
+        if position >= instruction_length or position < 0:
+            print("done with", a, b, position)
+            return b
+    
+    while True:
+        try: 
+            result = run_instruction(instruction_list[position])
+        except: 
+            break
+    return b
+
+def day23part1():
+    return day23(0)
+def day23part2():
+    return day23(1)
+
+############################## Day 24 ##############################
+
+
+
+if __name__ == "__main__": print(day23part2())
 
 
 
