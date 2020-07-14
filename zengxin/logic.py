@@ -11,6 +11,7 @@ import itertools
 import json
 import math
 import collections
+import math
 
 
 ############################## Day 1 ##############################
@@ -1414,10 +1415,51 @@ def day23part2():
     return day23(1)
 
 ############################## Day 24 ##############################
+def day24(group: int):
+    weight_list = [int(i) for i in read_file('24', 'list')]
+    each_sleigh = sum(weight_list)/group
+    print(each_sleigh)
+    max_packages = 0
+    for i in range(1,len(weight_list)):
+        weight_sum = sum(weight_list[:i])
+        if weight_sum >= each_sleigh:
+            max_packages = i
+            break
+    min_packages = 0
+    for j in range(1,len(weight_list)):
+        weight_sum = sum(weight_list[-j:])
+        if weight_sum >= each_sleigh:
+            min_packages = j
+            break
+    result_combination = []
+    for k in range(min_packages, max_packages+1):
+        combination = itertools.combinations(weight_list, k)
+        for w in combination:
+            if sum(w) == each_sleigh:
+                result_combination.append(w)
+        if result_combination:
+            break
+    result = min(map(lambda x: reduce(lambda a,c: a * c, x), result_combination))
+    return result
+            
+def day24part1():
+    return day24(3)
 
+def day24part2():
+    return day24(4)
 
+############################## Day 25 ##############################
+def day25part1():
+    position = [2981, 3075]
+    steps = sum([i+1 for i in range(sum(position)-1-1)]) + max(position)
+    a = 20151125  
+    for j in range(steps-1):
+        a = a * 252533 % 33554393
+    return a
+def day25part2():
+    return "Done with all 50 stars"
 
-if __name__ == "__main__": print(day23part2())
+if __name__ == "__main__": print(day25part2())
 
 
 
