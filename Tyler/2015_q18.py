@@ -1,5 +1,8 @@
 import numpy as np
 from itertools import islice
+import matplotlib.pyplot as plt
+import matplotlib
+import imageio
 
 
 d18_input_file_path = './input/2015/q18.txt'
@@ -127,8 +130,33 @@ def part2(arr):
         yield base_arr
         
 n = 100
-part1_arr = list(islice(show_display(grid), n-1, n))[0]
-print(f"After {n} times flash, there are {np.sum(part1_arr)} lights on for part1.")
+part1_arr = list(islice(show_display(grid), 0, n))
+part1 = part1_arr[-1]
+print(f"After {n} times flash, there are {np.sum(part1)} lights on for part1.")
 print()
-part2_arr = list(islice(part2(grid), n-1, n))[0]
-print(f"After {n} times flash, there are {np.sum(part2_arr)} lights on for part2.")
+part2_arr = list(islice(part2(grid), 0, n))
+part2 = part2_arr[-1]
+print(f"After {n} times flash, there are {np.sum(part2)} lights on for part2.")
+
+
+################################ draw the gif ###############################
+
+
+def one_shot(index, arr):
+    fig, ax = plt.subplots(figsize=(6,6))
+
+    x, y = np.argwhere(arr == 1).T
+    ax.scatter(x, y, s = 0.5)
+    ax.set(title=f'Evolution of the lights at step {index}')
+    fig.canvas.draw()
+
+    image = np.frombuffer(fig.canvas.tostring_rgb(), dtype='uint8')
+    image = image.reshape(fig.canvas.get_width_height()[::-1] + (3,))
+
+    return image
+
+start = 150  # from step 150 to 200
+stop = 200
+matplotlib.use('Agg')
+im_list = [one_shot(index+start, arr) for index, arr in enumerate(islice(show_display(grid), start, stop))]
+imageio.mimsave('./q18.gif', im_list, fps=5) 
