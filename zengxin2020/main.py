@@ -1,5 +1,4 @@
 
-
 '''
 use import as handler, import all scripts from a folder
 user input a folder to hold input
@@ -10,11 +9,11 @@ put all script together in one script like bird do, then use handle separate, an
 '''
 
 import sys
-sys.path.append("./lib")
 import json
 from util import read_file
 import logic
 import time
+sys.path.append("./lib")
 
 with open("./test.json") as f:
     event = json.load(f)
