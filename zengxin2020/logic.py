@@ -3,6 +3,7 @@ import hashlib
 import string
 import re
 import itertools
+import functools
 import json
 import math
 import collections
@@ -12,27 +13,21 @@ sys.path.append("./lib")
 
 # ############################ Day 1 ##############################
 def day1part1():
-    mystring = read_file("1", "string")
-    floor = 0
-    for i in mystring:
-        if i == '(':
-            floor += 1
-        elif i ==')':
-            floor -= 1
-    return floor
+    entity_list = read_file("1", "list")
+    for entity in entity_list:
+        sub_entity = 2020 - int(entity)
+        if str(sub_entity) in entity_list:
+            return int(entity) * sub_entity
 
 def day1part2():
-    floor = 0
-    mylist = read_file("1", "list")
-    list_floor = tuple(mylist[0])
-    for index, value in enumerate(list_floor): 
-        if value == '(':
-            floor += 1
-        elif value ==')':
-            floor -= 1
-            if floor ==-1: 
-                return index+1
+    entity_list = read_file("1", "list")
+    entity_list_num = [int(x) for x in entity_list]
+    combination_three = itertools.combinations(entity_list_num, 3)
+    for el in combination_three:
+        if sum(el) == 2020:
+            return functools.reduce(lambda a, b: a * b, el)
 
 
 if __name__ == "__main__":
+    print(day1part1())
     print(day1part2())
