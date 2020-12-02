@@ -1,7 +1,8 @@
 // solutions
 .aoc.202001part1:{prd l where (2020 - l) in l:"J"$x};
 .aoc.202001part2:{first r where not null r:distinct {if[2=sum b:((2020 - y[x]) - l) in l:y _ x; :prd y[x],l where b]}[;l] each til count l:"J"$x};
-
+.aoc.202002part1:{sum {c:sum v[1][0] = last v:" " vs x; and[c >= "J"$first n;c <= "J"$last n:"-" vs v[0]]} each x};
+.aoc.202002part2:{sum {1=sum v[1][0] = v[2] -1 + "J"$"-" vs first v:" " vs x} each x};
 
 // calculate and profile
 problem:raze (.Q.opt .z.x) `problem;
