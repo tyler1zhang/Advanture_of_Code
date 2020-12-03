@@ -3,6 +3,14 @@
 .aoc.202001part2:{first r where not null r:distinct {if[2=sum b:((2020 - y[x]) - l) in l:y _ x; :prd y[x],l where b]}[;l] each til count l:"J"$x};
 .aoc.202002part1:{sum {c:sum v[1][0] = last v:" " vs x; and[c >= "J"$first n;c <= "J"$last n:"-" vs v[0]]} each x};
 .aoc.202002part2:{sum {1=sum v[1][0] = v[2] -1 + "J"$"-" vs first v:" " vs x} each x};
+.aoc.202003part1:{n:ceiling (4*count x) % first distinct count each x; m:{raze y#enlist x}[;n] each x;
+  sum "#"={y[x][x*3]}[;m] each til count x};
+.aoc.202003part2:{
+  n:ceiling (8*count x) % first distinct count each x;
+  m:{raze y#enlist x}[;n] each x;
+  ra:prd {`long$sum "#"={z[x][x*y]}[;;z] .' (til count x),'y}[x;;m] each 1 3 5 7;
+  rb:`long$sum "#"={z[x][`long$x*y]}[;;m] .' (2*til ceiling (count x) % 2) ,' 0.5;
+  ra * rb};
 
 // calculate and profile
 problem:raze (.Q.opt .z.x) `problem;
