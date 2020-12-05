@@ -19,6 +19,11 @@
     ds:{l:":" vs' v where not "" ~/: v:" " vs x; d:(`$l[;0])!l[;1]} each "," vs raze " ",/:@[x;where "" ~/: x;:;","];
     ds:ds where all each `byr`iyr`eyr`hgt`hcl`ecl`pid in/: key each ds;
     sum val each ds};
+.aoc.202005part1:{lr:til 128; lc:til 8; .aoc.f5:{n:(count x) div 2; $[y in "FL";n # x;n _ x]};
+  max {(first z .aoc.f5/ -3#x) + 8 * first y .aoc.f5/ 7#x}[;lr;lc] each x};
+.aoc.202005part2:{lr:til 128; lc:til 8; .aoc.f5:{n:(count x) div 2; $[y in "FL";n # x;n _ x]};
+  l:{(first z .aoc.f5/ -3#x) + 8 * first y .aoc.f5/ 7#x}[;lr;lc] each x; first -1+(prev ls) where 2=(prev ls) - ls:desc l};
+
 
 // calculate and profile
 problem:raze (.Q.opt .z.x) `problem;
