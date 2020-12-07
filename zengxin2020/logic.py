@@ -55,6 +55,40 @@ def day2part2():
     return valid_password_counter
 
 
+def day3part1():
+    tree_map = read_file("3", "list")
+    one_line_round = (len(tree_map[0]) - 1) // 3
+    total_round_need = (len(tree_map) // one_line_round) + 1
+    tree_counter = 0
+    for i, el in enumerate(tree_map):
+        repeat_el = el * total_round_need
+        if repeat_el[3 * i] == "#":
+            tree_counter += 1
+    return tree_counter
+
+def day3part2():
+    tree_map = read_file("3", "list")
+    one_line_round = (len(tree_map[0]) - 1) // 7
+    total_round_need = (len(tree_map) // one_line_round) + 1
+    tree_counter = [0, 0, 0, 0, 0]
+    for i, el in enumerate(tree_map):
+        repeat_el = el * total_round_need
+        if repeat_el[i] == "#":
+            tree_counter[0] += 1
+        if repeat_el[3 * i] == "#":
+            tree_counter[1] += 1
+        if repeat_el[5 * i] == "#":
+            tree_counter[2] += 1
+        if repeat_el[7 * i] == "#":
+            tree_counter[3] += 1
+        if i % 2 == 0:
+            if repeat_el[int(i / 2)] == "#":
+                tree_counter[4] += 1
+    print(tree_counter)
+    product = functools.reduce(lambda a,c: a*c, tree_counter)
+    return product
+
+
 if __name__ == "__main__":
-    print(day2part2())
-    # print(day1part2())
+    print(day3part1())
+    print(day3part2())
