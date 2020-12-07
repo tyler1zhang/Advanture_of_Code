@@ -25,8 +25,12 @@
   l:{(first z .aoc.f5/ -3#x) + 8 * first y .aoc.f5/ 7#x}[;lr;lc] each x; first -1+(prev ls) where 2=(prev ls) - ls:desc l};
 .aoc.202006part1:{sum count each distinct each "," vs raze @[x;where "" ~/: x;:;","]};
 .aoc.202006part2:{sum {count (inter/)v where not ""~/:v:" " vs x} each "," vs raze " ",/:@[x;where "" ~/: x;:;","]};
-.aoc.202007part1:{f:{" " sv' 2#'" " vs' y where y like\: "*[0-9] ",x,"*"}; .aoc.cl:enlist "shiny gold";
-  while[(count .aoc.cl) < count ncl:distinct .aoc.cl,raze f[;x] each .aoc.cl; .aoc.cl:ncl];
+.aoc.202007part1:{
+  k:{`$rtrim first "contain" vs ssr[x;"bags";"bag"]} each x;
+  v:{v:" " vs' trim "," vs ssr[;".";""]last "contain" vs ssr[x;"bags";"bag"]; `$" " sv' 1 _' v} each x;
+  .aoc.d:k!v;
+  .aoc.cl:enlist `$"shiny gold bag";
+  while[(count .aoc.cl) < count ncl:distinct .aoc.cl,raze {where x in/: .aoc.d} each .aoc.cl; .aoc.cl:ncl];
   -1 + count .aoc.cl};
 .aoc.202007part2:{
   k:{`$rtrim first "contain" vs ssr[x;"bags";"bag"]} each x;
