@@ -25,6 +25,17 @@
   l:{(first z .aoc.f5/ -3#x) + 8 * first y .aoc.f5/ 7#x}[;lr;lc] each x; first -1+(prev ls) where 2=(prev ls) - ls:desc l};
 .aoc.202006part1:{sum count each distinct each "," vs raze @[x;where "" ~/: x;:;","]};
 .aoc.202006part2:{sum {count (inter/)v where not ""~/:v:" " vs x} each "," vs raze " ",/:@[x;where "" ~/: x;:;","]};
+.aoc.202007part1:{f:{" " sv' 2#'" " vs' y where y like\: "*[0-9] ",x,"*"}; .aoc.cl:enlist "shiny gold";
+  while[(count .aoc.cl) < count ncl:distinct .aoc.cl,raze f[;x] each .aoc.cl; .aoc.cl:ncl];
+  -1 + count .aoc.cl};
+.aoc.202007part2:{
+  k:{`$rtrim first "contain" vs ssr[x;"bags";"bag"]} each x;
+  v:{v:" " vs' trim "," vs ssr[;".";""]last "contain" vs ssr[x;"bags";"bag"]; ("J"$v[;0]) ,' `$" " sv' 1 _' v} each x;
+  .aoc.d:k!v;
+  kv:where (`$"other bag") = .aoc.d[;0][;1];
+  .aoc.dv:kv!(count kv)#1;
+  while[not (`$"shiny gold bag") in key .aoc.dv; .aoc.dv,:kv!{1+sum x[;0] *' .aoc.dv x[;1]} each .aoc.d kv:where all each .aoc.d[;;1] in key .aoc.dv];
+  .aoc.dv[`$"shiny gold bag"]-1};
 
 
 // calculate and profile
