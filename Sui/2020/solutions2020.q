@@ -23,6 +23,8 @@
   max {(first z .aoc.f5/ -3#x) + 8 * first y .aoc.f5/ 7#x}[;lr;lc] each x};
 .aoc.202005part2:{lr:til 128; lc:til 8; .aoc.f5:{n:(count x) div 2; $[y in "FL";n # x;n _ x]};
   l:{(first z .aoc.f5/ -3#x) + 8 * first y .aoc.f5/ 7#x}[;lr;lc] each x; first -1+(prev ls) where 2=(prev ls) - ls:desc l};
+.aoc.202006part1:{sum count each distinct each "," vs raze @[x;where "" ~/: x;:;","]};
+.aoc.202006part2:{sum {count (inter/)v where not ""~/:v:" " vs x} each "," vs raze " ",/:@[x;where "" ~/: x;:;","]};
 
 
 // calculate and profile
