@@ -40,6 +40,30 @@
   .aoc.dv:kv!(count kv)#1;
   while[not (`$"shiny gold bag") in key .aoc.dv; .aoc.dv,:kv!{1+sum x[;0] *' .aoc.dv x[;1]} each .aoc.d kv:where all each .aoc.d[;;1] in key .aoc.dv];
   .aoc.dv[`$"shiny gold bag"]-1};
+.aoc.202008part1:{
+  .aoc.l:{(`$first v), "J"$last v:" " vs x} each x;
+  .aoc.il:enlist 0;
+  .aoc.acc:0;
+  f:{i:.aoc.l x;
+    if[`acc=i[0]; .aoc.acc+:i[1]; .aoc.il,:x+1];
+    if[`jmp=i[0]; .aoc.il,:x+i[1]];
+    if[`nop=(.aoc.l x)[0]; .aoc.il,:x+1]};
+  while[not 2 in value count each group .aoc.il; f last .aoc.il];
+  .aoc.acc};
+.aoc.202008part2:{
+  .aoc.l:{(`$first v), "J"$last v:" " vs x} each x;
+  l1:{@[.aoc.l;x;{`nop,x[1]}]} each where `jmp=.aoc.l[;0];
+  l2:{@[.aoc.l;x;{`jmp,x[1]}]} each where `nop=.aoc.l[;0];
+  ll:l1,l2;
+  ff:{l:x; .aoc.il:enlist 0; .aoc.acc:0; .aoc.flag:0b;
+    f:{if[x=674;:.aoc.flag:1b];
+      i:y x;
+      if[`acc=i[0]; .aoc.acc+:i[1]; .aoc.il,:x+1];
+      if[`jmp=i[0]; .aoc.il,:x+i[1]];
+      if[`nop=i[0]; .aoc.il,:x+1]};
+    while[and[not .aoc.flag;not 2 in value count each group .aoc.il]; f[;l] last .aoc.il];
+    $[2 in value count each group .aoc.il;:`nto;:.aoc.acc]};
+  first r where not `nto ~/: r:distinct ff each ll};
 
 
 // calculate and profile
