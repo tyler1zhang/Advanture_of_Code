@@ -64,6 +64,13 @@
     while[and[not .aoc.flag;not 2 in value count each group .aoc.il]; f[;l] last .aoc.il];
     $[2 in value count each group .aoc.il;:`nto;:.aoc.acc]};
   first r where not `nto ~/: r:distinct ff each ll};
+.aoc.202009part1:{l:"J"$x; f:{y[x] in raze p +/:\:p:y [x - 1 + til 25]};
+  i:25; while [f[;l] i; i+:1]; l i};
+.aoc.202009part2:{l:"J"$x; f:{y[x] in raze p +/:\:p:y [x - 1 + til 25]}; i:25; while [f[;l] i; i+:1];
+  p:{y[z] = sum each y @ (til z - x) +\: til x}[;l;i]; 
+  n:3; while[not any p n; n+:1];
+  rg:nl where l[i] = sum each l @ nl:(til i - n) +\: til n;
+  sum (min;max) @\: l raze rg}
 
 
 // calculate and profile
