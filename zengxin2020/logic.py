@@ -89,6 +89,20 @@ def day3part2():
     return product
 
 
+def day4part1():
+    passport_records = read_file("4", "string")
+    passport_records_list = passport_records.split("\n\n")
+    # print(passport_records_list)
+    valid_passport_counter = 0
+    counter = 0
+    for passport_record in passport_records_list:
+        print(counter, passport_record)
+        counter += 1
+        if re.match(r"(?=(.|\s)*byr)(?=(.|\s)*iyr)(?=(.|\s)*eyr)(?=(.|\s)*hgt)(?=(.|\s)*hcl)(?=(.|\s)*ecl)(?=(.|\s)*pid)", passport_record):
+            print("aaaaaaaaaaaaa", valid_passport_counter, passport_record)
+            valid_passport_counter += 1
+    return valid_passport_counter
+
 if __name__ == "__main__":
-    print(day3part1())
-    print(day3part2())
+    print(day4part1())
+    # print(day3part2())
