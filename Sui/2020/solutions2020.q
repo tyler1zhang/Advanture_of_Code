@@ -71,6 +71,8 @@
   n:3; while[not any p n; n+:1];
   rg:nl where l[i] = sum each l @ nl:(til i - n) +\: til n;
   sum (min;max) @\: l raze rg};
+.aoc.202010part1:{prd value count each group 1, 3^(next l) - l:asc "J"$x};
+.aoc.202010part2:{d:count each group -1 _ (next p) - p:-1, where 3 = 3^(next l) - l:0,asc "J"$x; prd raze (d 5 4 3) #' 7 4 2};
 
 
 // calculate and profile
