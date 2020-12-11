@@ -92,17 +92,27 @@ def day3part2():
 def day4part1():
     passport_records = read_file("4", "string")
     passport_records_list = passport_records.split("\n\n")
-    # print(passport_records_list)
     valid_passport_counter = 0
-    counter = 0
     for passport_record in passport_records_list:
-        print(counter, passport_record)
-        counter += 1
         if re.match(r"(?=(.|\s)*byr)(?=(.|\s)*iyr)(?=(.|\s)*eyr)(?=(.|\s)*hgt)(?=(.|\s)*hcl)(?=(.|\s)*ecl)(?=(.|\s)*pid)", passport_record):
-            print("aaaaaaaaaaaaa", valid_passport_counter, passport_record)
             valid_passport_counter += 1
     return valid_passport_counter
 
+def day4part2():
+    passport_records = read_file("4", "string")
+    passport_records_list = passport_records.split("\n\n")
+    valid_passport_counter = 0
+    for passport_record in passport_records_list:
+        # print(passport_record)
+        # print()
+        if re.match(r"(?=(.|\s)*byr:(19[2-9][0-9]|200[0-2])(\s|$))(?=(.|\s)*iyr:(201[0-9]|2020)(\s|$))(?=(.|\s)*eyr:(202[0-9]|2030)(\s|$))(?=(.|\s)*hgt:(1[5-8][0-9]cm|19[0-3]cm|59in|6[0-9]in|7[0-6]in)(\s|$))(?=(.|\s)*hcl:#[0-9,a-f]{6}(\s|$))(?=(.|\s)*ecl:(amb|blu|brn|gry|grn|hzl|oth)(\s|$))(?=(.|\s)*pid:[0-9]{9}(\s|$))", passport_record):
+            valid_passport_counter += 1
+            print("aaaaaaaaaaaaaaaaaaaaaaa", passport_record)
+            # print()
+            print()
+    return valid_passport_counter
+
+
 if __name__ == "__main__":
-    print(day4part1())
-    # print(day3part2())
+    # print(day4part1())
+    print(day4part2())
