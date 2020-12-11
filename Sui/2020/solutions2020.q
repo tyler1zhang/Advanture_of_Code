@@ -73,6 +73,31 @@
   sum (min;max) @\: l raze rg};
 .aoc.202010part1:{prd value count each group 1, 3^(next l) - l:asc "J"$x};
 .aoc.202010part2:{d:count each group -1 _ (next p) - p:-1, where 3 = 3^(next l) - l:0,asc "J"$x; prd raze (d 5 4 3) #' 7 4 2};
+.aoc.202011part1:{.aoc.s:x; .aoc.p:x; .aoc.c:(count x)#enlist (count first x)#" ";
+  f:{s:.aoc.s . x;
+    n:{x[y][z]}[.aoc.s;;] .' (x +/: raze a ,\:/: a:-1 0 1) except enlist x;
+    if[and["L" = s;not "#" in n]; .[`.aoc.c;x;:;"#"]];
+    if[and["#" = s;4 <= sum "#" = n]; .[`.aoc.c;x;:;"L"]]};
+  while[not .aoc.c ~ .aoc.p; .aoc.p:.aoc.s; f each raze (til count x) ,/:\: (til count first x); .aoc.s:.aoc.c];
+  sum "#" = raze .aoc.c};
+.aoc.202011part2:{.aoc.s:x; .aoc.p:x; .aoc.c:(count x)#enlist (count first x)#" ";
+  .aoc.row:count x; .aoc.col:count first x;
+  f:{i:x[0]; j:x[1];
+    l1:i ,' lr:j + 1 _ til .aoc.col - j;
+    l2:i ,' ll:reverse til j;
+    l3:(ld:i + 1 _ til .aoc.row - i) ,' j;
+    l4:(lu:reverse til i) ,' j;
+    df:{(,') . (min count each (x;y))#'(x;y)};
+    l5:df[ld;lr];
+    l6:df[lu;lr];
+    l7:df[ld;ll];
+    l8:df[lu;ll];
+    st:.aoc.s . x;
+    n:raze first each sl @' where each any "L#" =\: sl:.aoc.s ./:/: (l1;l2;l3;l4;l5;l6;l7;l8);
+    if[and["L" = st;not "#" in n]; .[`.aoc.c;x;:;"#"]];
+    if[count n; if[and["#" = st;5 <= sum "#" = n]; .[`.aoc.c;x;:;"L"]]]};
+  while[not .aoc.c ~ .aoc.p; .aoc.p:.aoc.s; f each raze (til count x) ,/:\: (til count first x); .aoc.s:.aoc.c];
+  sum "#" = raze .aoc.c};
 
 
 // calculate and profile
