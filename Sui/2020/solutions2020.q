@@ -98,6 +98,27 @@
     if[count n; if[and["#" = st;5 <= sum "#" = n]; .[`.aoc.c;x;:;"L"]]]};
   while[not .aoc.c ~ .aoc.p; .aoc.p:.aoc.s; f each raze (til count x) ,/:\: (til count first x); .aoc.s:.aoc.c];
   sum "#" = raze .aoc.c};
+.aoc.202012part1:{
+  .aoc.d:0 1 2 3!`E`S`W`N;
+  .aoc.dc:-3 -2 -1 0 1 2 3 4 5 6!`S`W`N`E`S`W`N`E`S`W;
+  .aoc.p:0 0; 
+  .aoc.f:`E;
+  g:{if[x[0] in `E`S`W`N; .aoc.p+:x[1] * (`E`S`W`N!(1 0;0 -1;-1 0;0 1))x[0]];
+    if[x[0] in `L`R; d:x[1] div 90; .aoc.f:.aoc.dc (.aoc.d?.aoc.f) + ((`L`R!(neg;eval))x[0]) @ d];
+    if[x[0]=`F; .aoc.p+:x[1] * (`E`S`W`N!(1 0;0 -1;-1 0;0 1)).aoc.f]};
+  g each {(`$first x;"J"$1 _ x)} each x;
+  sum abs .aoc.p};
+.aoc.202012part2:{
+  .aoc.wp:10 1; 
+  .aoc.sp:0 0;
+  g:{if[x[0] in `E`S`W`N; .aoc.wp+:x[1] * (`E`S`W`N!(1 0;0 -1;-1 0;0 1))x[0]];
+    if[x[0]in`L`R; d:((`L`R!(neg;eval))x[0]) @ x[1] div 90; 
+      if[1 = abs d;.aoc.wp:@[reverse .aoc.wp;(-1 1!0 1)d;neg]];
+      if[2 = abs d;.aoc.wp:neg .aoc.wp];
+      if[3 = abs d;.aoc.wp:@[reverse .aoc.wp;(-3 3!1 0)d;neg]]];
+    if[x[0]=`F; .aoc.sp+:.aoc.wp * x[1]]};
+  g each {(`$first x;"J"$1 _ x)} each x;
+  sum abs .aoc.sp};
 
 
 // calculate and profile
